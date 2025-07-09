@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Support Our Rosh Hashanah Appeal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            display: block;
+            margin: 20px auto;
+            border: none;
+            background: none;
+        }
+    </style>
+    <script type="text/javascript">
+        function calculateTotal(form) {
+            const base = parseFloat(form.base_amount.value);
+            const quantity = parseInt(form.custom_quantity.value);
+            if (!isNaN(base) && !isNaN(quantity)) {
+                form.amount.value = (base * quantity).toFixed(2);
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Support Our Rosh Hashanah Appeal</h2>
+    <form onsubmit="return calculateTotal(this);" name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
+        <input type="hidden" name="cmd" value="_paynow">
+        <input type="hidden" name="receiver" value="10071923">
+        <input type="hidden" name="item_name" value="Bringing Yom Tov Joy">
+        <input type="hidden" name="item_description" value="Help provide Rosh Hashanah food parcels">
+        <input type="hidden" name="amount" value="270.00">
+
+        <label for="name_first">First Name:</label>
+        <input type="text" id="name_first" name="name_first" required>
+
+        <label for="name_last">Last Name:</label>
+        <input type="text" id="name_last" name="name_last" required>
+
+        <label for="email_address">Email Address:</label>
+        <input type="email" id="email_address" name="email_address" required>
+
+        <label for="base_amount">Amount per parcel (R):</label>
+        <input id="base_amount" name="base_amount" type="number" step="0.01" value="270.00" required>
+
+        <label for="custom_quantity">Number of parcels:</label>
+        <input id="custom_quantity" name="custom_quantity" type="number" value="1" min="1" required>
+
+        <label for="custom_str1">Message or Comment:</label>
+        <input type="text" id="custom_str1" name="custom_str1" maxlength="255">
+
+        <div style="text-align:center;">
+            <input type="image" class="submit-btn" src="https://my.payfast.io/images/buttons/DonateNow/Primary-Large-DonateNow.png" alt="Donate Now">
+        </div>
+    </form>
+</div>
+</body>
+</html>
