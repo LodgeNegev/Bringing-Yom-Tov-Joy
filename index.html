@@ -1,56 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bringing Yom Tov Joy - Donate</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; }
-        .container { max-width: 520px; margin: auto; background: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #003399; }
-        .red { color: red; font-weight: bold; }
-        label { display: block; margin-top: 12px; }
-        input[type="text"], input[type="email"], input[type="number"] { width: 100%; padding: 9px; margin-top: 4px; box-sizing: border-box; }
-        .note { text-align: center; font-size: 16px; }
-        .submit-btn { display: block; margin: 22px auto; border: none; background: none; }
-    </style>
+<meta charset="UTF-8">
+<title>Bringing Yom Tov Joy - Donate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    padding: 20px;
+    color: #1a1a1a;
+}
+.container {
+    max-width: 620px;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 14px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
+.header {
+    background: #0046b8;
+    color: white;
+    text-align: center;
+    padding: 22px;
+}
+.header h1 {
+    margin: 5px 0;
+    font-size: 34px;
+    color: #ff0000;
+    background: white;
+    padding: 8px;
+    border-radius: 6px;
+}
+.header h3 {
+    margin: 6px 0;
+}
+.content {
+    padding: 25px;
+}
+.highlight {
+    background: #e7f4ff;
+    border-left: 6px solid #0046b8;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+.amount-note {
+    color: #d00000;
+    font-weight: bold;
+    font-size: 20px;
+}
+label {
+    display: block;
+    margin-top: 14px;
+    font-weight: bold;
+}
+input[type="text"],
+input[type="email"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.button-area {
+    text-align: center;
+    margin-top: 24px;
+}
+.footer {
+    background: #002b80;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+}
+</style>
 </head>
 
 <body>
+
 <div class="container">
-    <h2>Bringing Yom Tov Joy</h2>
 
-    <p class="note">
-        Please enter the amount you would like to donate.<br>
-        <span class="red">A contribution of R360 fills a meaningful Rosh Hashanah food parcel.</span>
-    </p>
+    <div class="header">
+        <h3>120 years of service to the Community</h3>
+        <h3>Please support our Annual Rosh Hashanah Appeal</h3>
+        <h1>Bringing Yom Tov Joy</h1>
+    </div>
 
-    <form name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
-        <input type="hidden" name="cmd" value="_paynow">
-        <input type="hidden" name="receiver" value="10071923">
-        <input type="hidden" name="item_name" value="Bringing Yom Tov Joy Donation">
-        <input type="hidden" name="item_description" value="Rosh Hashanah Appeal Donation">
+    <div class="content">
 
-        <label for="amount">Donation Amount (R):</label>
-        <input id="amount" name="amount" type="number" step="0.01" min="5.00" value="360.00" required>
-
-        <label for="name_first">First Name:</label>
-        <input type="text" id="name_first" name="name_first" required>
-
-        <label for="name_last">Last Name:</label>
-        <input type="text" id="name_last" name="name_last" required>
-
-        <label for="email_address">Email Address:</label>
-        <input type="email" id="email_address" name="email_address" required>
-
-        <label for="custom_str1">Message or Comment:</label>
-        <input type="text" id="custom_str1" name="custom_str1" maxlength="255">
-
-        <div style="text-align:center;">
-            <input type="image" class="submit-btn"
-                   src="https://my.payfast.io/images/buttons/DonateNow/Primary-Large-DonateNow.png"
-                   alt="Donate Now">
+        <div class="highlight">
+            Help us bring warmth, dignity and comfort to underprivileged and elderly families in our community.
+            <br><br>
+            <span class="amount-note">A contribution of R360 fills a meaningful Rosh Hashanah food parcel.</span>
         </div>
-    </form>
+
+        <form name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
+            <input type="hidden" name="cmd" value="_paynow">
+            <input type="hidden" name="receiver" value="10071923">
+            <input type="hidden" name="item_name" value="Bringing Yom Tov Joy Donation">
+            <input type="hidden" name="item_description" value="Rosh Hashanah Appeal Donation">
+
+            <label for="amount">Donation Amount (R):</label>
+            <input id="amount" name="amount" type="number" step="0.01" min="5.00" value="360.00" required>
+
+            <label for="name_first">First Name:</label>
+            <input type="text" id="name_first" name="name_first" required>
+
+            <label for="name_last">Last Name:</label>
+            <input type="text" id="name_last" name="name_last" required>
+
+            <label for="email_address">Email Address:</label>
+            <input type="email" id="email_address" name="email_address" required>
+
+            <label for="custom_str1">Message or Comment:</label>
+            <input type="text" id="custom_str1" name="custom_str1" maxlength="255">
+
+            <div class="button-area">
+                <input type="image"
+                       src="https://my.payfast.io/images/buttons/DonateNow/Primary-Large-DonateNow.png"
+                       alt="Donate Now"
+                       title="Donate Now with PayFast">
+            </div>
+        </form>
+
+    </div>
+
+    <div class="footer">
+        Hebrew Order of David International<br>
+        Love thy neighbour as thyself
+    </div>
+
 </div>
+
 </body>
 </html>
