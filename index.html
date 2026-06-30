@@ -6,92 +6,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f7fb;
-    margin: 0;
-    padding: 20px;
-    color: #1a1a1a;
+body { font-family: Arial, sans-serif; background:#f4f7fb; margin:0; padding:20px; color:#1a1a1a; }
+.container { max-width:620px; margin:auto; background:white; border-radius:10px; box-shadow:0 0 14px rgba(0,0,0,0.12); overflow:hidden; }
+.header { background:#0046b8; color:white; text-align:center; padding:22px; }
+.header h1 { margin:5px 0; font-size:34px; color:#cc0000; background:white; padding:8px; border-radius:6px; }
+.header h3 { margin:6px 0; font-weight:normal; }
+.content { padding:25px; }
+.highlight { background:#eef6ff; border-left:6px solid #0046b8; padding:18px; margin-bottom:22px; text-align:center; line-height:1.6; }
+.amount-note { color:#c00000; font-weight:bold; font-size:18px; }
+.small-note { font-size:14px; color:#555; }
+label { display:block; margin-top:14px; font-weight:bold; }
+input[type="text"], input[type="email"], input[type="number"] {
+    width:100%; padding:10px; margin-top:5px; box-sizing:border-box;
+    border:1px solid #bbb; border-radius:5px; font-size:16px;
 }
-.container {
-    max-width: 620px;
-    margin: auto;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 14px rgba(0,0,0,0.12);
-    overflow: hidden;
+.amount-buttons { text-align:center; margin:15px 0; }
+.amount-buttons button {
+    padding:10px 14px; margin:5px; border:none; border-radius:5px;
+    background:#0046b8; color:white; font-weight:bold; cursor:pointer;
 }
-.header {
-    background: #0046b8;
-    color: white;
-    text-align: center;
-    padding: 22px;
-}
-.header h1 {
-    margin: 5px 0;
-    font-size: 34px;
-    color: #cc0000;
-    background: white;
-    padding: 8px;
-    border-radius: 6px;
-}
-.header h3 {
-    margin: 6px 0;
-    font-weight: normal;
-}
-.content {
-    padding: 25px;
-}
-.highlight {
-    background: #eef6ff;
-    border-left: 6px solid #0046b8;
-    padding: 18px;
-    margin-bottom: 22px;
-    text-align: center;
-    line-height: 1.6;
-}
-.amount-note {
-    color: #c00000;
-    font-weight: bold;
-    font-size: 18px;
-}
-.small-note {
-    font-size: 14px;
-    color: #555;
-}
-label {
-    display: block;
-    margin-top: 14px;
-    font-weight: bold;
-}
-input[type="text"],
-input[type="email"],
-input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    box-sizing: border-box;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    font-size: 16px;
-}
-.button-area {
-    text-align: center;
-    margin-top: 28px;
-}
-.footer {
-    background: #002b80;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-size: 14px;
-}
+.amount-buttons button:hover { background:#002b80; }
+.button-area { text-align:center; margin-top:28px; }
+.footer { background:#002b80; color:white; text-align:center; padding:15px; font-size:14px; }
 </style>
 
+<script>
+function setAmount(value) {
+    document.getElementById("amount").value = value;
+}
+</script>
 </head>
 
 <body>
-
 <div class="container">
 
 <div class="header">
@@ -103,106 +49,59 @@ input[type="number"] {
 <div class="content">
 
 <div class="highlight">
-
 Help us bring warmth, dignity and comfort to underprivileged and elderly families in our community.
-
 <br><br>
-
 <strong>You are welcome to donate any amount.</strong>
-
-<div class="small-note">
-Every contribution, large or small, is sincerely appreciated.
-</div>
-
+<div class="small-note">Every contribution, large or small, is sincerely appreciated.</div>
 <br>
-
-<div class="amount-note">
-As a guide, a contribution of R360 provides one meaningful Rosh Hashanah food parcel.
+<div class="amount-note">As a guide, R360 provides one meaningful Rosh Hashanah food parcel.</div>
 </div>
 
-</div>
-
-<form name="PayFastPayNowForm"
-action="https://payment.payfast.io/eng/process"
-method="post">
-
+<form name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
 <input type="hidden" name="cmd" value="_paynow">
 <input type="hidden" name="receiver" value="10071923">
+<input type="hidden" name="item_name" value="Bringing Yom Tov Joy Donation">
+<input type="hidden" name="item_description" value="Rosh Hashanah Appeal Donation">
 
-<input type="hidden" name="item_name"
-value="Bringing Yom Tov Joy Donation">
+<label>Suggested amounts:</label>
+<div class="amount-buttons">
+<button type="button" onclick="setAmount('180.00')">R180</button>
+<button type="button" onclick="setAmount('360.00')">R360<br>1 Parcel</button>
+<button type="button" onclick="setAmount('720.00')">R720<br>2 Parcels</button>
+<button type="button" onclick="setAmount('1800.00')">R1,800</button>
+</div>
 
-<input type="hidden" name="item_description"
-value="Rosh Hashanah Appeal Donation">
-
-<label for="amount">Enter your donation amount (R):</label>
-
-<input
-id="amount"
-name="amount"
-type="number"
-step="0.01"
-min="5.00"
-value="360.00"
-required>
+<label for="amount">Or enter your own donation amount (R):</label>
+<input id="amount" name="amount" type="number" step="0.01" min="5.00" value="360.00" required>
 
 <label for="name_first">First Name:</label>
-
-<input
-type="text"
-id="name_first"
-name="name_first"
-required>
+<input type="text" id="name_first" name="name_first" required>
 
 <label for="name_last">Last Name:</label>
-
-<input
-type="text"
-id="name_last"
-name="name_last"
-required>
+<input type="text" id="name_last" name="name_last" required>
 
 <label for="email_address">Email Address:</label>
-
-<input
-type="email"
-id="email_address"
-name="email_address"
-required>
+<input type="email" id="email_address" name="email_address" required>
 
 <label for="custom_str1">Message or Comment (optional):</label>
-
-<input
-type="text"
-id="custom_str1"
-name="custom_str1"
-maxlength="255">
+<input type="text" id="custom_str1" name="custom_str1" maxlength="255">
 
 <div class="button-area">
-
-<input
-type="image"
+<input type="image"
 src="https://my.payfast.io/images/buttons/DonateNow/Primary-Large-DonateNow.png"
 alt="Donate Now"
 title="Donate Now with PayFast">
-
 </div>
 
 </form>
-
 </div>
 
 <div class="footer">
-
 Hebrew Order of David International<br>
-
 <i>Ve'ahavtah Le'reachah Kamochah</i><br>
-
 Love thy neighbour as thyself
-
 </div>
 
 </div>
-
 </body>
 </html>
