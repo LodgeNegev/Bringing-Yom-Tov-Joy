@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lodge Negev Yahrzeit Reminder Project</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body { font-family: Arial, sans-serif; background:#f4f7fb; margin:0; padding:20px; color:#1a1a1a; }
+.container { max-width:620px; margin:auto; background:white; border-radius:10px; box-shadow:0 0 14px rgba(0,0,0,0.12); overflow:hidden; }
+.header { background:#1f4e78; color:white; text-align:center; padding:24px; }
+.header h1 { margin:6px 0; font-size:30px; }
+.header h3 { margin:6px 0; font-weight:normal; }
+.content { padding:26px; }
+.highlight { background:#f5f7fa; border-left:6px solid #1f4e78; padding:18px; margin-bottom:22px; text-align:center; line-height:1.6; }
+.memorial { font-size:18px; font-style:italic; margin-top:10px; }
+.small-note { font-size:14px; color:#555; }
+label { display:block; margin-top:14px; font-weight:bold; }
+input[type="text"], input[type="email"], input[type="number"] {
+    width:100%; padding:10px; margin-top:5px; box-sizing:border-box;
+    border:1px solid #bbb; border-radius:5px; font-size:16px;
+}
+.amount-buttons { text-align:center; margin:15px 0; }
+.amount-buttons button {
+    padding:10px 16px; margin:5px; border:none; border-radius:5px;
+    background:#c9a227; color:white; font-weight:bold; cursor:pointer;
+}
+.amount-buttons button:hover { background:#a98618; }
+.button-area { text-align:center; margin-top:28px; }
+.footer { background:#163a5c; color:white; text-align:center; padding:15px; font-size:14px; }
+</style>
+
+<script>
+function setAmount(value) {
+    document.getElementById("amount").value = value;
+}
+</script>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+<h3>Lodge Negev · Hebrew Order of David</h3>
+<h1>Yahrzeit Reminder Project</h1>
+<h3>Remembering those who came before us</h3>
+</div>
+
+<div class="content">
+
+<div class="highlight">
+Lodge Negev provides a complimentary Yahrzeit reminder service to help families remember the Hebrew anniversary of the passing of a loved one.
+<br><br>
+There is no charge for the service.
+<br><br>
+Those who wish to make a donation in memory of a loved one are invited to support Lodge Negev's charitable activities.
+<div class="memorial">May their memory be for a blessing.</div>
+</div>
+
+<form name="PayFastPayNowForm" action="https://payment.payfast.io/eng/process" method="post">
+<input type="hidden" name="cmd" value="_paynow">
+<input type="hidden" name="receiver" value="10071923">
+<input type="hidden" name="item_name" value="Yahrzeit Reminder Project Donation">
+<input type="hidden" name="item_description" value="Donation in memory of a loved one">
+
+<label>Suggested amounts:</label>
+<div class="amount-buttons">
+<button type="button" onclick="setAmount('180.00')">R180</button>
+<button type="button" onclick="setAmount('360.00')">R360</button>
+<button type="button" onclick="setAmount('720.00')">R720</button>
+<button type="button" onclick="setAmount('1800.00')">R1,800</button>
+</div>
+
+<label for="amount">Or enter your own donation amount (R):</label>
+<input id="amount" name="amount" type="number" step="0.01" min="5.00" value="180.00" required>
+
+<label for="name_first">First Name:</label>
+<input type="text" id="name_first" name="name_first" required>
+
+<label for="name_last">Last Name:</label>
+<input type="text" id="name_last" name="name_last" required>
+
+<label for="email_address">Email Address:</label>
+<input type="email" id="email_address" name="email_address" required>
+
+<label for="custom_str1">In memory of:</label>
+<input type="text" id="custom_str1" name="custom_str1" maxlength="255">
+
+<label for="custom_str2">Message or comment (optional):</label>
+<input type="text" id="custom_str2" name="custom_str2" maxlength="255">
+
+<div class="button-area">
+<input type="image"
+src="https://my.payfast.io/images/buttons/DonateNow/Primary-Large-DonateNow.png"
+alt="Donate Now"
+title="Donate Now with PayFast">
+</div>
+
+</form>
+</div>
+
+<div class="footer">
+Hebrew Order of David International<br>
+<i>Ve'ahavtah Le'reachah Kamochah</i><br>
+Love thy neighbour as thyself
+</div>
+
+</div>
+</body>
+</html>
