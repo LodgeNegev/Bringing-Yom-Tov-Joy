@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pical Quote Studio - V5 Web Demo</title>
+<style>
+:root{--g:#236b38;--g2:#e9f4ec;--ink:#1f2933;--muted:#68727d;--line:#d8dee4;--bg:#f5f7f5}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#111;color:#fff;padding:14px 22px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:30px;font-weight:800;letter-spacing:-1px}.brand small{display:block;font-size:11px;font-weight:400;letter-spacing:.5px}
+header .demo{font-size:12px;background:#2d7d46;padding:6px 10px;border-radius:14px}
+nav{background:#fff;border-bottom:1px solid var(--line);padding:10px 14px;display:flex;gap:6px;flex-wrap:wrap}
+button{border:0;border-radius:6px;padding:9px 13px;cursor:pointer;font-weight:600}
+nav button,.secondary{background:var(--g2);color:var(--g)}.primary{background:var(--g);color:#fff}.danger{background:#ffe9e9;color:#a52828}
+.screen{display:none;padding:20px;max-width:1250px;margin:auto}.screen.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:15px;box-shadow:0 1px 3px #00000008}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:#3a444c}input,select,textarea{width:100%;padding:9px;border:1px solid #bcc6ce;border-radius:6px;background:#fff}
+h1,h2,h3{margin-top:0}.muted{color:var(--muted);font-size:13px}.notice{background:var(--g2);border-left:4px solid var(--g);padding:10px 12px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px}.kpi b{display:block;font-size:23px;color:var(--g)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #e5e9ed;padding:8px;text-align:left}th{background:#f6f8f7}.right{text-align:right}
+.badge{display:inline-block;padding:4px 8px;border-radius:12px;background:var(--g2);color:var(--g);font-size:11px;font-weight:700}
+.quotePaper{background:#fff;max-width:850px;margin:auto;padding:30px;border:1px solid var(--line)}.quoteHead{display:flex;justify-content:space-between;border-bottom:3px solid var(--g);padding-bottom:14px;margin-bottom:20px}
+.quoteHead .pical{font-size:38px;font-weight:800}.quoteHead .tag{font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+@media(max-width:800px){.grid2,.grid3,.grid4,.kpis{grid-template-columns:1fr}.screen{padding:10px}}
+@media print{header,nav,.noPrint{display:none!important}.screen{display:none!important}.screen#printable{display:block!important;padding:0}.quotePaper{border:0}}
+</style>
+</head>
+<body>
+<header><div class="brand">pical<small>the branding company</small></div><div class="demo">V5 WEB DEMO</div></header>
+<nav>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="newQuote()">New Quote</button>
+<button onclick="show('clients')">Clients</button>
+<button onclick="show('materials')">Material Setup</button>
+<button onclick="show('prices')">Manage Prices</button>
+<button onclick="show('projects')">Past Projects</button>
+<button onclick="show('audit')">Audit Log</button>
+<button onclick="previewQuote()">Customer Quote</button>
+</nav>
+
+<section id="login" class="screen">
+<div class="card" style="max-width:520px;margin:40px auto">
+<h2>Staff Sign-in Demo</h2><p class="muted">Illustrative only - production would use secure individual accounts.</p>
+<label>Name</label><input id="staffName" value="Stan">
+<label style="margin-top:10px">Role</label><select id="staffRole"><option>Estimator</option><option>Pricing Administrator</option><option>Manager</option><option>Administrator</option></select>
+<div class="actions"><button class="primary" onclick="login()">Enter Quote Studio</button></div>
+</div>
+</section>
+
+<section id="dashboard" class="screen">
+<h2>Dashboard</h2>
+<div class="kpis">
+<div class="kpi"><span class="muted">Draft Quotes</span><b id="kDraft">2</b></div>
+<div class="kpi"><span class="muted">Awaiting Approval</span><b>1</b></div>
+<div class="kpi"><span class="muted">Quotes This Month</span><b>18</b></div>
+<div class="kpi"><span class="muted">Demo User</span><b id="kUser" style="font-size:18px">-</b></div>
+</div>
+<div class="card" style="margin-top:15px"><h3>Quick Start</h3><div class="actions"><button class="primary" onclick="newQuote()">New Project / Quote</button><button class="secondary" onclick="show('projects')">Recent Projects</button><button class="secondary" onclick="show('materials')">Material Recipes</button></div></div>
+<div class="card"><h3>Recent Work</h3><table><tr><th>Quote</th><th>Client</th><th>Project</th><th>Division</th><th>Status</th></tr><tr><td>Q-2026-0147 Rev 2</td><td>ABC Motors</td><td>Dealer Signage</td><td>Signage</td><td><span class="badge">Draft</span></td></tr><tr><td>Q-2026-0145 Rev 1</td><td>Greenway Retail</td><td>Wall Graphics</td><td>Wall Graphics</td><td><span class="badge">Sent</span></td></tr></table></div>
+</section>
+
+<section id="quote" class="screen">
+<h2>New Project / Quote</h2>
+<div class="card">
+<div class="grid3">
+<div><label>Client</label><select id="qClient" onchange="clientChanged()"></select></div>
+<div><label>Contact</label><input id="qContact"></div>
+<div><label>Email</label><input id="qEmail"></div>
+<div><label>Project Name</label><input id="qProject" value="Reception Signage"></div>
+<div><label>Site</label><input id="qSite" value="Sandton"></div>
+<div><label>Estimator</label><input id="qEstimator" value="Stan"></div>
+<div><label>Quote No.</label><input id="qNo" value="Q-2026-0147"></div>
+<div><label>Revision</label><input id="qRev" type="number" value="1" min="1"></div>
+<div><label>Status</label><select id="qStatus"><option>Draft</option><option>Sent</option><option>Accepted</option><option>Superseded</option></select></div>
+</div>
+</div>
+
+<div class="card"><h3>Costing Lines</h3>
+<div class="grid4">
+<div><label>Division</label><select id="lineDiv"><option>Signage</option><option>Vehicle Branding</option><option>Wall Graphics</option><option>Fabrication</option><option>Installation</option><option>Other</option></select></div>
+<div><label>Description</label><input id="lineDesc" value="ACM reception sign"></div>
+<div><label>Internal Cost</label><input id="lineCost" type="number" value="1000" step=".01"></div>
+<div><label>Markup %</label><input id="lineMarkup" type="number" value="133"></div>
+</div>
+<div class="actions"><button class="primary" onclick="addLine()">Add Costing Line</button><button class="secondary" onclick="show('materials')">Use Material Recipe</button></div>
+<table><thead><tr><th>Division</th><th>Description</th><th class="right">Cost</th><th class="right">Markup</th><th class="right">Sell</th><th class="right">GM</th><th></th></tr></thead><tbody id="lineTable"></tbody></table>
+</div>
+
+<div class="card"><div class="grid4">
+<div><label>Total Internal Cost</label><input id="sumCost" readonly></div>
+<div><label>Net Selling</label><input id="sumSell" readonly></div>
+<div><label>Gross Profit</label><input id="sumProfit" readonly></div>
+<div><label>Gross Margin</label><input id="sumMargin" readonly></div>
+</div>
+<div class="actions"><button class="primary" onclick="saveProject()">Save Project</button><button class="secondary" onclick="newRevision()">Create Revision</button><button class="secondary" onclick="previewQuote()">Generate Customer Quote</button></div></div>
+</section>
+
+<section id="clients" class="screen">
+<h2>Client Master</h2><div class="notice">The client is selected from one master list so spelling, contact details and email stay consistent.</div>
+<div class="card"><div class="grid4"><div><label>Client / Company</label><input id="cName"></div><div><label>Contact</label><input id="cContact"></div><div><label>Email</label><input id="cEmail"></div><div><label>Telephone</label><input id="cPhone"></div></div><div class="actions"><button class="primary" onclick="addClient()">Add Client</button></div></div>
+<div class="card"><table><thead><tr><th>Client</th><th>Contact</th><th>Email</th><th>Phone</th></tr></thead><tbody id="clientTable"></tbody></table></div>
+</section>
+
+<section id="materials" class="screen">
+<h2>Material Conversion / Recipe Setup</h2>
+<div class="notice">Raw stock is converted into the unit actually used for costing. Operations such as cutting, fixings and labour are then added automatically.</div>
+<div class="card"><h3>ACM Sheet -> m² + Fixings</h3>
+<div class="grid4"><div><label>Sheet Width m</label><input id="aw" type="number" value="1.50" step=".01" oninput="calcRecipes()"></div><div><label>Sheet Length m</label><input id="al" type="number" value="3.05" step=".01" oninput="calcRecipes()"></div><div><label>Sheet Cost</label><input id="ac" type="number" value="418.03" oninput="calcRecipes()"></div><div><label>Waste %</label><input id="awaste" type="number" value="5" oninput="calcRecipes()"></div><div><label>Required Area m²</label><input id="am2" type="number" value="2.88" oninput="calcRecipes()"></div><div><label>Fixings / m²</label><input id="afix" type="number" value="6" oninput="calcRecipes()"></div><div><label>Cost / Fixing</label><input id="afixcost" type="number" value="3.50" oninput="calcRecipes()"></div><div><label>Total Internal Cost</label><input id="acmTotal" readonly></div></div>
+<div class="actions"><button class="primary" onclick="useACM()">Add ACM Recipe to Quote</button></div></div>
+
+<div class="card"><h3>Steel Angle -> Running Metre + Cutting + Fixings + Labour</h3>
+<div class="grid4"><div><label>Stock Length m</label><input id="sl" type="number" value="6" oninput="calcRecipes()"></div><div><label>Stock Cost</label><input id="sc" type="number" value="360" oninput="calcRecipes()"></div><div><label>Waste %</label><input id="sw" type="number" value="5" oninput="calcRecipes()"></div><div><label>Required Length m</label><input id="sr" type="number" value="3.4" oninput="calcRecipes()"></div><div><label>No. Cuts</label><input id="cuts" type="number" value="2" oninput="calcRecipes()"></div><div><label>Cost / Cut</label><input id="cutCost" type="number" value="18" oninput="calcRecipes()"></div><div><label>No. Fixings</label><input id="fixQty" type="number" value="6" oninput="calcRecipes()"></div><div><label>Cost / Fixing</label><input id="fixCost" type="number" value="3.50" oninput="calcRecipes()"></div><div><label>Labour Hours</label><input id="hrs" type="number" value=".5" oninput="calcRecipes()"></div><div><label>Labour Rate / hr</label><input id="rate" type="number" value="350" oninput="calcRecipes()"></div><div><label>Cost / Running Metre</label><input id="steelM" readonly></div><div><label>Total Internal Cost</label><input id="steelTotal" readonly></div></div>
+<div class="actions"><button class="primary" onclick="useSteel()">Add Steel Recipe to Quote</button></div></div>
+</section>
+
+<section id="prices" class="screen">
+<h2>Manage Prices</h2><div class="notice">Production version: Estimators can view prices; Pricing Administrators and Managers can update them. Every change is logged.</div>
+<div class="card"><div class="grid3"><div><label>Material</label><select id="priceItem"><option>3MM C BOND ACM WHITE MATT/MATT</option><option>AVERY MPI1105 WHITE - 1.37MX50M</option><option>AVERY DOL1360 - 1.37MX50M</option><option>25x25x3 Steel Angle - 6m</option></select></div><div><label>New Cost</label><input id="newCost" type="number" value="418.03"></div><div><label>Reason / Note</label><input id="priceReason" value="Supplier price update"></div></div><div class="actions"><button class="primary" onclick="updatePrice()">Update Price</button></div></div>
+<div class="card"><h3>Sample Material Master</h3><table><tr><th>Code</th><th>Material</th><th>UOM</th><th class="right">Cost</th></tr><tr><td>S0006</td><td>3MM C BOND ACM WHITE MATT/MATT - 1.50M X 3.05M</td><td>Sheet</td><td class="right">R 418.03</td></tr><tr><td>S0058</td><td>AVERY MPI1105 WHITE - 1.37MX50M</td><td>Running metre</td><td class="right">R 160.00</td></tr><tr><td>FAB001</td><td>25x25x3 Steel Angle - 6m</td><td>Length</td><td class="right">R 360.00</td></tr></table></div>
+</section>
+
+<section id="projects" class="screen">
+<h2>Past Projects / Quote Register</h2><div class="card"><div class="grid3"><div><label>Search</label><input placeholder="Client, quote or project"></div><div><label>Division</label><select><option>All</option><option>Signage</option><option>Vehicle Branding</option><option>Fabrication</option><option>Installation</option></select></div><div><label>Status</label><select><option>All</option><option>Draft</option><option>Sent</option><option>Accepted</option></select></div></div></div>
+<div class="card"><table><thead><tr><th>Quote</th><th>Client</th><th>Project</th><th>Divisions</th><th>Estimator</th><th>Status</th><th class="right">Value</th></tr></thead><tbody id="projectTable"><tr><td>Q-2026-0147 Rev 2</td><td>ABC Motors</td><td>Dealer Signage</td><td>Signage + Installation</td><td>Stan</td><td>Draft</td><td class="right">R 24,850.00</td></tr><tr><td>Q-2026-0145 Rev 1</td><td>Greenway Retail</td><td>Wall Graphics</td><td>Wall Graphics</td><td>Robert</td><td>Sent</td><td class="right">R 18,200.00</td></tr></tbody></table></div>
+</section>
+
+<section id="audit" class="screen">
+<h2>Audit Log</h2><div class="card"><table><thead><tr><th>Date/Time</th><th>User</th><th>Action</th><th>Detail</th></tr></thead><tbody id="auditTable"></tbody></table></div>
+</section>
+
+<section id="printable" class="screen">
+<div class="quotePaper"><div class="quoteHead"><div><div class="pical">pical</div><div class="tag">the branding company</div></div><div><b>QUOTATION</b><br><span id="pNo"></span><br><span id="pRev"></span></div></div>
+<div class="grid2"><div><b>Client</b><br><span id="pClient"></span><br><span id="pContact"></span></div><div><b>Project</b><br><span id="pProject"></span><br><span id="pSite"></span></div></div>
+<br><table><thead><tr><th>Description</th><th>Division</th><th class="right">Amount</th></tr></thead><tbody id="pLines"></tbody></table>
+<div style="max-width:340px;margin-left:auto;margin-top:18px"><table><tr><td>Subtotal</td><td class="right" id="pSub"></td></tr><tr><td>VAT 15%</td><td class="right" id="pVat"></td></tr><tr><td><b>Total</b></td><td class="right"><b id="pTotal"></b></td></tr></table></div>
+<p class="muted">Quotation valid for 30 days. Demo terms only.</p></div>
+<div class="actions noPrint" style="max-width:850px;margin:12px auto"><button class="primary" onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="emailQuote()">Email Quote</button><button class="secondary" onclick="show('quote')">Back to Costing</button></div>
+</section>
+
+<script>
+var clients=[
+{name:'ABC Motors (Pty) Ltd',contact:'John Smith',email:'john@example.com',phone:'011 555 0101'},
+{name:'Greenway Retail',contact:'Sarah Jacobs',email:'sarah@example.com',phone:'011 555 0102'},
+{name:'Metro Property Group',contact:'David Naidoo',email:'david@example.com',phone:'011 555 0103'}
+];
+var lines=[];
+var audit=[];
+function $(x){return document.getElementById(x)}
+function money(v){return 'R '+Number(v||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});$(id).classList.add('active')}
+function logAction(action,detail){audit.unshift({time:new Date().toLocaleString(),user:$('staffName').value||'Demo User',action:action,detail:detail});renderAudit()}
+function login(){$('kUser').textContent=($('staffName').value||'Demo')+' - '+$('staffRole').value;$('qEstimator').value=$('staffName').value||'Demo';logAction('Login',$('staffRole').value);show('dashboard')}
+function loadClients(){var s=$('qClient');s.innerHTML='';clients.forEach(function(c,i){var o=document.createElement('option');o.value=i;o.textContent=c.name;s.appendChild(o)});renderClients();clientChanged()}
+function renderClients(){var t=$('clientTable');t.innerHTML='';clients.forEach(function(c){t.innerHTML+='<tr><td>'+c.name+'</td><td>'+c.contact+'</td><td>'+c.email+'</td><td>'+c.phone+'</td></tr>'})}
+function clientChanged(){var c=clients[+$('qClient').value||0];if(!c)return;$('qContact').value=c.contact;$('qEmail').value=c.email}
+function addClient(){var n=$('cName').value.trim();if(!n)return alert('Enter a client name');clients.push({name:n,contact:$('cContact').value,email:$('cEmail').value,phone:$('cPhone').value});loadClients();logAction('Client added',n);alert('Client added to demo master')}
+function newQuote(){lines=[];$('qRev').value=1;$('qStatus').value='Draft';renderLines();show('quote')}
+function addLine(){var cost=+$('lineCost').value||0,mu=+$('lineMarkup').value||0;lines.push({div:$('lineDiv').value,desc:$('lineDesc').value,cost:cost,markup:mu,sell:cost*(1+mu/100)});renderLines();logAction('Costing line added',$('lineDesc').value)}
+function renderLines(){var t=$('lineTable');t.innerHTML='';var c=0,s=0;lines.forEach(function(x,i){c+=x.cost;s+=x.sell;var gm=x.sell?(x.sell-x.cost)/x.sell*100:0;t.innerHTML+='<tr><td>'+x.div+'</td><td>'+x.desc+'</td><td class="right">'+money(x.cost)+'</td><td class="right">'+x.markup.toFixed(0)+'%</td><td class="right">'+money(x.sell)+'</td><td class="right">'+gm.toFixed(1)+'%</td><td><button class="danger" onclick="removeLine('+i+')">X</button></td></tr>'});$('sumCost').value=money(c);$('sumSell').value=money(s);$('sumProfit').value=money(s-c);$('sumMargin').value=(s?((s-c)/s*100):0).toFixed(1)+'%'}
+function removeLine(i){lines.splice(i,1);renderLines()}
+function calcRecipes(){var area=(+$('aw').value||0)*(+$('al').value||0),raw=area?(+$('ac').value||0)/area:0,usable=raw*(1+(+$('awaste').value||0)/100),m2=+$('am2').value||0,fix=m2*(+$('afix').value||0)*(+$('afixcost').value||0);$('acmTotal').value=(m2*usable+fix).toFixed(2);var sl=+$('sl').value||0,pm=sl?(+$('sc').value||0)/sl*(1+(+$('sw').value||0)/100):0;$('steelM').value=pm.toFixed(2);$('steelTotal').value=((+$('sr').value||0)*pm+(+$('cuts').value||0)*(+$('cutCost').value||0)+(+$('fixQty').value||0)*(+$('fixCost').value||0)+(+$('hrs').value||0)*(+$('rate').value||0)).toFixed(2)}
+function useACM(){$('lineDiv').value='Signage';$('lineDesc').value='ACM sheet material + fixings';$('lineCost').value=$('acmTotal').value;$('lineMarkup').value=133;show('quote');addLine()}
+function useSteel(){$('lineDiv').value='Fabrication';$('lineDesc').value='Steel angle + cutting + fixings + fabrication';$('lineCost').value=$('steelTotal').value;$('lineMarkup').value=133;show('quote');addLine()}
+function saveProject(){logAction('Project saved',$('qNo').value+' Rev '+$('qRev').value);alert('Demo project saved')}
+function newRevision(){var r=+$('qRev').value||1;$('qRev').value=r+1;$('qStatus').value='Draft';logAction('Revision created',$('qNo').value+' Rev '+(r+1));alert('Revision '+(r+1)+' created. Original revision remains in history.')}
+function updatePrice(){if($('staffRole').value==='Estimator')return alert('Estimator role cannot update master pricing in the production system.');logAction('Price updated',$('priceItem').value+' -> R '+$('newCost').value+' ('+$('priceReason').value+')');alert('Demo price update recorded in Audit Log')}
+function renderAudit(){var t=$('auditTable');if(!t)return;t.innerHTML='';audit.forEach(function(a){t.innerHTML+='<tr><td>'+a.time+'</td><td>'+a.user+'</td><td>'+a.action+'</td><td>'+a.detail+'</td></tr>'})}
+function previewQuote(){var c=clients[+$('qClient').value||0];$('pNo').textContent=$('qNo').value;$('pRev').textContent='Revision '+$('qRev').value;$('pClient').textContent=c?c.name:'';$('pContact').textContent=$('qContact').value;$('pProject').textContent=$('qProject').value;$('pSite').textContent=$('qSite').value;var t=$('pLines');t.innerHTML='';var sub=0;lines.forEach(function(x){sub+=x.sell;t.innerHTML+='<tr><td>'+x.desc+'</td><td>'+x.div+'</td><td class="right">'+money(x.sell)+'</td></tr>'});$('pSub').textContent=money(sub);$('pVat').textContent=money(sub*.15);$('pTotal').textContent=money(sub*1.15);show('printable')}
+function emailQuote(){var c=clients[+$('qClient').value||0];var subject=encodeURIComponent('Pical quotation '+$('qNo').value+' Rev '+$('qRev').value);var body=encodeURIComponent('Dear '+$('qContact').value+',\n\nPlease find our quotation for '+$('qProject').value+'.\n\nKind regards,\nPical');location.href='mailto:'+(c?c.email:$('qEmail').value)+'?subject='+subject+'&body='+body}
+loadClients();calcRecipes();renderLines();renderAudit();show('login');
+</script>
+</body>
+</html>
