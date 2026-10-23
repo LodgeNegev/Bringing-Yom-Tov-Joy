@@ -44,7 +44,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div class="kpi"><span class="muted">Current Project</span><b id="kProject">Shopping Centre Signage</b></div>
 <div class="kpi"><span class="muted">Jobs</span><b id="kJobs">3</b></div>
 <div class="kpi"><span class="muted">Project Cost</span><b id="kCost">R 0.00</b></div>
-<div class="kpi"><span class="muted">Project Sell</span><b id="kSell">R 0.00</b></div>
+<div class="kpi"><span class="muted">Project Sell incl. Allowances</span><b id="kSell">R 0.00</b></div>
 </div>
 <div class="card" style="margin-top:15px">
 <h3>V6 Structure</h3>
@@ -64,6 +64,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div><label>Estimator</label><input id="pEstimator" value="Robert"></div>
 <div><label>Quote No.</label><input id="pQuote" value="Q-2026-0201"></div>
 <div><label>Status</label><select id="pStatus"><option>Draft</option><option>Sent</option><option>Accepted</option></select></div>
+<div><label>Fixings %</label><input id="pctFixings" type="number" value="2.5" step="0.1" oninput="updateDashboard()"></div>
+<div><label>Waste %</label><input id="pctWaste" type="number" value="2.5" step="0.1" oninput="updateDashboard()"></div>
+<div><label>Contingency %</label><input id="pctCont" type="number" value="2.5" step="0.1" oninput="updateDashboard()"></div>
 </div>
 <div class="actions"><button class="primary" onclick="show('jobs')">Continue to Jobs</button></div>
 </div>
@@ -117,7 +120,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <section id="recipes" class="screen">
 <h2>Recipe Master</h2>
-<div class="warning"><b>Sample framework only.</b> Rob's actual recipes will replace these examples once he provides the component rules.</div>
+<div class="warning"><b>Recipes are parked for now.</b> This screen remains only as a placeholder until Rob decides how he wants recipes handled.</div>
 <div class="card">
 <div class="grid3">
 <div><label>Recipe</label><select id="recipeSelect" onchange="renderRecipe()"></select></div>
@@ -140,7 +143,15 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div class="quoteHead"><div><div class="pical">pical</div><div class="tag">the branding company</div></div><div><b>QUOTATION</b><br><span id="qNo"></span></div></div>
 <p><b>Client:</b> <span id="qClient"></span><br><b>Project:</b> <span id="qProject"></span></p>
 <table><thead><tr><th>Job</th><th>Description</th><th>Division</th><th class="right">Amount</th></tr></thead><tbody id="quoteJobs"></tbody></table>
-<div style="max-width:360px;margin-left:auto;margin-top:18px"><table><tr><td>Subtotal</td><td class="right" id="qSub"></td></tr><tr><td>VAT 15%</td><td class="right" id="qVat"></td></tr><tr><td><b>Total</b></td><td class="right"><b id="qTotal"></b></td></tr></table></div>
+<div style="max-width:420px;margin-left:auto;margin-top:18px"><table>
+<tr><td>Subtotal of Jobs</td><td class="right" id="qSub"></td></tr>
+<tr><td>Fixings <span id="qFixPct"></span></td><td class="right" id="qFix"></td></tr>
+<tr><td>Waste <span id="qWastePct"></span></td><td class="right" id="qWaste"></td></tr>
+<tr><td>Contingency <span id="qContPct"></span></td><td class="right" id="qCont"></td></tr>
+<tr><td><b>Subtotal incl. Allowances</b></td><td class="right"><b id="qAdjSub"></b></td></tr>
+<tr><td>VAT 15%</td><td class="right" id="qVat"></td></tr>
+<tr><td><b>Total</b></td><td class="right"><b id="qTotal"></b></td></tr>
+</table></div>
 </div>
 <div class="actions noPrint" style="max-width:900px;margin:12px auto"><button class="primary" onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="show('jobs')">Back to Jobs</button></div>
 </section>
@@ -186,13 +197,47 @@ function removeLine(i){jobs[currentJob].lines.splice(i,1);renderLines();updateDa
 function renderLines(){let j=jobs[currentJob],t=$('lineTable');t.innerHTML='';j.lines.forEach((x,i)=>{let c=x.qty*x.unit,s=c*(1+x.markup/100);t.innerHTML+=`<tr><td>${x.desc}</td><td class="right">${x.qty}</td><td class="right">${money(x.unit)}</td><td class="right">${money(c)}</td><td class="right">${money(s)}</td><td><button class="danger" onclick="removeLine(${i})">X</button></td></tr>`});let z=totals(j);$('jobCost').value=money(z.cost);$('jobSell').value=money(z.sell);$('jobMargin').value=(z.sell?((z.sell-z.cost)/z.sell*100):0).toFixed(1)+'%'}
 function renderJobsSummary(){let t=$('jobsTable');t.innerHTML='';let pc=0,ps=0;jobs.forEach((j,i)=>{let z=totals(j);pc+=z.cost;ps+=z.sell;t.innerHTML+=`<tr><td>${j.no}</td><td>${j.name}</td><td>${j.location}</td><td>${j.division}</td><td class="right">${money(z.cost)}</td><td class="right">${money(z.sell)}</td><td><button class="secondary" onclick="openJob(${i})">Open</button></td></tr>`});$('projCost').textContent=money(pc);$('projSell').textContent=money(ps)}
 function openJob(i){currentJob=i;loadJob();show('jobs')}
-function updateDashboard(){let c=0,s=0;jobs.forEach(j=>{let z=totals(j);c+=z.cost;s+=z.sell});$('kJobs').textContent=jobs.length;$('kCost').textContent=money(c);$('kSell').textContent=money(s);$('kProject').textContent=$('pName')?$('pName').value:'Shopping Centre Signage'}
+function allowanceRates(){
+  return {
+    fix:(+$('pctFixings').value||0)/100,
+    waste:(+$('pctWaste').value||0)/100,
+    cont:(+$('pctCont').value||0)/100
+  };
+}
+function updateDashboard(){
+  let c=0,s=0;
+  jobs.forEach(j=>{let z=totals(j);c+=z.cost;s+=z.sell});
+  let r=allowanceRates(), adjusted=s+s*r.fix+s*r.waste+s*r.cont;
+  $('kJobs').textContent=jobs.length;
+  $('kCost').textContent=money(c);
+  $('kSell').textContent=money(adjusted);
+  $('kProject').textContent=$('pName')?$('pName').value:'Shopping Centre Signage'
+}
 function renderRecipeSelect(){let s=$('recipeSelect');s.innerHTML='';recipes.forEach((r,i)=>{let o=document.createElement('option');o.value=i;o.textContent=r.name;s.appendChild(o)});renderRecipe()}
 function renderRecipe(){let r=recipes[+$('recipeSelect').value||0];$('recipeBasis').value=r.basis;let t=$('recipeTable');t.innerHTML='';r.components.forEach(c=>{t.innerHTML+=`<tr><td>${c.name}</td><td>${c.basis}</td><td class="right">${c.qty}</td><td class="right">${money(c.cost)}</td><td class="right">${money(c.qty*c.cost)}</td></tr>`})}
 function applyRecipe(){let r=recipes[+$('recipeSelect').value||0],q=+$('recipeQty').value||0;let cost=0;r.components.forEach(c=>cost+=c.qty*c.cost*q);jobs[currentJob].lines.push({desc:r.name+' recipe ('+q+' '+r.basis+')',qty:1,unit:cost,markup:133,recipe:r.name,recipeQty:q});renderLines();updateDashboard();show('jobs')}
 function addRecipeComponent(){let r=recipes[+$('recipeSelect').value||0];let name=prompt('Component name e.g. Tape, Silicone, Screws');if(!name)return;let qty=parseFloat(prompt('Quantity per recipe unit','1')||'0');let cost=parseFloat(prompt('Unit cost','0')||'0');r.components.push({name,basis:'each',qty,cost,unit:'each'});renderRecipe()}
 function renderBOQ(){let map={};jobs.forEach(j=>j.lines.forEach(l=>{if(l.recipe){let r=recipes.find(x=>x.name===l.recipe);if(r)r.components.forEach(c=>{let key=c.name+'|'+c.unit;if(!map[key])map[key]={name:c.name,unit:c.unit,qty:0,jobs:[]};map[key].qty+=c.qty*l.recipeQty;if(!map[key].jobs.includes(j.no))map[key].jobs.push(j.no)})}}));let t=$('boqTable');t.innerHTML='';Object.values(map).forEach(x=>{t.innerHTML+=`<tr><td>${x.name}</td><td class="right">${x.qty.toFixed(2)}</td><td>${x.unit}</td><td>${x.jobs.join(', ')}</td></tr>`});if(!Object.keys(map).length)t.innerHTML='<tr><td colspan="4">Add one or more recipes to jobs to generate the BOQ.</td></tr>'}
-function previewQuote(){let t=$('quoteJobs');t.innerHTML='';let sub=0;jobs.forEach(j=>{let z=totals(j);sub+=z.sell;t.innerHTML+=`<tr><td>${j.no}</td><td>${j.name}</td><td>${j.division}</td><td class="right">${money(z.sell)}</td></tr>`});$('qNo').textContent=$('pQuote').value;$('qClient').textContent=$('pClient').value;$('qProject').textContent=$('pName').value;$('qSub').textContent=money(sub);$('qVat').textContent=money(sub*.15);$('qTotal').textContent=money(sub*1.15);show('printable')}
+function previewQuote(){
+  let t=$('quoteJobs');t.innerHTML='';let sub=0;
+  jobs.forEach(j=>{let z=totals(j);sub+=z.sell;t.innerHTML+=`<tr><td>${j.no}</td><td>${j.name}</td><td>${j.division}</td><td class="right">${money(z.sell)}</td></tr>`});
+  let r=allowanceRates(), fix=sub*r.fix, waste=sub*r.waste, cont=sub*r.cont;
+  let adjusted=sub+fix+waste+cont, vat=adjusted*.15;
+  $('qNo').textContent=$('pQuote').value;
+  $('qClient').textContent=$('pClient').value;
+  $('qProject').textContent=$('pName').value;
+  $('qSub').textContent=money(sub);
+  $('qFixPct').textContent='('+($('pctFixings').value||0)+'%)';
+  $('qWastePct').textContent='('+($('pctWaste').value||0)+'%)';
+  $('qContPct').textContent='('+($('pctCont').value||0)+'%)';
+  $('qFix').textContent=money(fix);
+  $('qWaste').textContent=money(waste);
+  $('qCont').textContent=money(cont);
+  $('qAdjSub').textContent=money(adjusted);
+  $('qVat').textContent=money(vat);
+  $('qTotal').textContent=money(adjusted+vat);
+  show('printable')
+}
 renderJobSelect();loadJob();renderRecipeSelect();updateDashboard();
 </script>
 </body>
