@@ -101,11 +101,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 <div class="grid4">
 <div><label>Description</label><input id="lineDesc" value="ACM panel"></div>
 <div><label>Qty</label><input id="lineQty" type="number" value="1" step=".01"></div>
+<div><label>Unit</label><select id="lineUnit"><option>each</option><option>m²</option><option>m</option><option>sheet</option><option>roll</option><option>hour</option><option>fixed</option></select></div>
 <div><label>Unit Cost</label><input id="lineUnitCost" type="number" value="500" step=".01"></div>
 <div><label>Markup %</label><input id="lineMarkup" type="number" value="133"></div>
 </div>
 <div class="actions"><button class="primary" onclick="addLine()">Add Costing Line</button></div>
-<table><thead><tr><th>Description</th><th class="right">Qty</th><th class="right">Unit Cost</th><th class="right">Cost</th><th class="right">Sell</th><th></th></tr></thead><tbody id="lineTable"></tbody></table>
+<table><thead><tr><th>Description</th><th class="right">Qty</th><th>Unit</th><th class="right">Unit Cost</th><th class="right">Cost</th><th class="right">Sell</th><th></th></tr></thead><tbody id="lineTable"></tbody></table>
 <div class="grid3" style="margin-top:14px">
 <div><label>Job Cost</label><input id="jobCost" readonly></div>
 <div><label>Job Selling Price</label><input id="jobSell" readonly></div>
@@ -135,9 +136,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 </section>
 
 <section id="boq" class="screen">
-<h2>Bill of Quantities / Stores Picking List</h2><div class="warning"><b>Confirmed requirement:</b> this output is wanted. Detailed stock/recipe logic will be refined later.</div>
-<div class="notice">This consolidates materials across all jobs. No selling prices are shown.</div>
-<div class="card"><table><thead><tr><th>Item / Material</th><th class="right">Total Quantity</th><th>Unit</th><th>Jobs</th></tr></thead><tbody id="boqTable"></tbody></table></div>
+<h2>Bill of Quantities / Stores Picking List</h2><div class="warning"><b>Confirmed requirement:</b> this V7 Picking List is generated from the costing items entered against the individual jobs. Recipe-driven expansion can be added later if required.</div>
+<div class="notice">This consolidates identical costing items across all jobs into a Stores Picking List. No internal cost, markup or selling prices are shown.</div>
+<div class="card"><table><thead><tr><th>Item / Material</th><th class="right">Total Quantity</th><th>Unit</th><th>Jobs</th><th>Locations</th></tr></thead><tbody id="boqTable"></tbody></table></div>
 </section>
 
 <section id="printable" class="screen">
@@ -160,9 +161,9 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px
 
 <script>
 var jobs=[
-{no:'J001',name:'Main Entrance Pylon',location:'Entrance A',division:'Main Signage',status:'Costed',lines:[{desc:'ACM panel',qty:4,unit:500,markup:133}]},
-{no:'J002',name:'Toilet Direction Sign - Level 1',location:'Level 1',division:'Toilet Signage',status:'Draft',lines:[{desc:'Directional sign assembly',qty:2,unit:350,markup:133}]},
-{no:'J003',name:'Information Sign - Food Court',location:'Food Court',division:'Information Signage',status:'Costed',lines:[{desc:'Information panel',qty:1,unit:620,markup:133}]}
+{no:'J001',name:'Main Entrance Pylon',location:'Entrance A',division:'Main Signage',status:'Costed',lines:[{desc:'ACM panel',qty:4,uom:'m²',unit:500,markup:133}]},
+{no:'J002',name:'Toilet Direction Sign - Level 1',location:'Level 1',division:'Toilet Signage',status:'Draft',lines:[{desc:'Directional sign assembly',qty:2,uom:'each',unit:350,markup:133}]},
+{no:'J003',name:'Information Sign - Food Court',location:'Food Court',division:'Information Signage',status:'Costed',lines:[{desc:'Information panel',qty:1,uom:'each',unit:620,markup:133}]}
 ];
 var currentJob=0;
 var recipes=[
@@ -194,9 +195,9 @@ function loadJob(){let j=jobs[currentJob];$('jNo').value=j.no;$('jName').value=j
 function saveCurrentJob(){let j=jobs[currentJob];j.name=$('jName').value;j.location=$('jLocation').value;j.division=$('jDivision').value;j.status=$('jStatus').value;renderJobSelect();updateDashboard()}
 function addJob(){let n=jobs.length+1;jobs.push({no:'J'+String(n).padStart(3,'0'),name:'New Job '+n,location:'',division:'Main Signage',status:'Draft',lines:[]});currentJob=jobs.length-1;loadJob();show('jobs')}
 function duplicateJob(){let src=jobs[currentJob],n=jobs.length+1;jobs.push({no:'J'+String(n).padStart(3,'0'),name:src.name+' - Copy',location:src.location,division:src.division,status:'Draft',lines:src.lines.map(x=>({...x}))});currentJob=jobs.length-1;loadJob()}
-function addLine(){let j=jobs[currentJob];j.lines.push({desc:$('lineDesc').value,qty:+$('lineQty').value||0,unit:+$('lineUnitCost').value||0,markup:+$('lineMarkup').value||0});renderLines();updateDashboard()}
+function addLine(){let j=jobs[currentJob];j.lines.push({desc:$('lineDesc').value,qty:+$('lineQty').value||0,uom:$('lineUnit').value,unit:+$('lineUnitCost').value||0,markup:+$('lineMarkup').value||0});renderLines();updateDashboard()}
 function removeLine(i){jobs[currentJob].lines.splice(i,1);renderLines();updateDashboard()}
-function renderLines(){let j=jobs[currentJob],t=$('lineTable');t.innerHTML='';j.lines.forEach((x,i)=>{let c=x.qty*x.unit,s=c*(1+x.markup/100);t.innerHTML+=`<tr><td>${x.desc}</td><td class="right">${x.qty}</td><td class="right">${money(x.unit)}</td><td class="right">${money(c)}</td><td class="right">${money(s)}</td><td><button class="danger" onclick="removeLine(${i})">X</button></td></tr>`});let z=totals(j);$('jobCost').value=money(z.cost);$('jobSell').value=money(z.sell);$('jobMargin').value=(z.sell?((z.sell-z.cost)/z.sell*100):0).toFixed(1)+'%'}
+function renderLines(){let j=jobs[currentJob],t=$('lineTable');t.innerHTML='';j.lines.forEach((x,i)=>{let c=x.qty*x.unit,s=c*(1+x.markup/100);t.innerHTML+=`<tr><td>${x.desc}</td><td class="right">${x.qty}</td><td>${x.uom||'each'}</td><td class="right">${money(x.unit)}</td><td class="right">${money(c)}</td><td class="right">${money(s)}</td><td><button class="danger" onclick="removeLine(${i})">X</button></td></tr>`});let z=totals(j);$('jobCost').value=money(z.cost);$('jobSell').value=money(z.sell);$('jobMargin').value=(z.sell?((z.sell-z.cost)/z.sell*100):0).toFixed(1)+'%'}
 function renderJobsSummary(){let t=$('jobsTable');t.innerHTML='';let pc=0,ps=0;jobs.forEach((j,i)=>{let z=totals(j);pc+=z.cost;ps+=z.sell;t.innerHTML+=`<tr><td>${j.no}</td><td>${j.name}</td><td>${j.location}</td><td>${j.division}</td><td><span class="badge">${j.status||'Draft'}</span></td><td class="right">${money(z.cost)}</td><td class="right">${money(z.sell)}</td><td><button class="secondary" onclick="openJob(${i})">Open</button></td></tr>`});$('projCost').textContent=money(pc);$('projSell').textContent=money(ps)}
 function openJob(i){currentJob=i;loadJob();show('jobs')}
 function allowanceRates(){
@@ -217,9 +218,26 @@ function updateDashboard(){
 }
 function renderRecipeSelect(){let s=$('recipeSelect');s.innerHTML='';recipes.forEach((r,i)=>{let o=document.createElement('option');o.value=i;o.textContent=r.name;s.appendChild(o)});renderRecipe()}
 function renderRecipe(){let r=recipes[+$('recipeSelect').value||0];$('recipeBasis').value=r.basis;let t=$('recipeTable');t.innerHTML='';r.components.forEach(c=>{t.innerHTML+=`<tr><td>${c.name}</td><td>${c.basis}</td><td class="right">${c.qty}</td><td class="right">${money(c.cost)}</td><td class="right">${money(c.qty*c.cost)}</td></tr>`})}
-function applyRecipe(){let r=recipes[+$('recipeSelect').value||0],q=+$('recipeQty').value||0;let cost=0;r.components.forEach(c=>cost+=c.qty*c.cost*q);jobs[currentJob].lines.push({desc:r.name+' recipe ('+q+' '+r.basis+')',qty:1,unit:cost,markup:133,recipe:r.name,recipeQty:q});renderLines();updateDashboard();show('jobs')}
+function applyRecipe(){let r=recipes[+$('recipeSelect').value||0],q=+$('recipeQty').value||0;let cost=0;r.components.forEach(c=>cost+=c.qty*c.cost*q);jobs[currentJob].lines.push({desc:r.name+' recipe ('+q+' '+r.basis+')',qty:1,uom:'fixed',unit:cost,markup:133,recipe:r.name,recipeQty:q});renderLines();updateDashboard();show('jobs')}
 function addRecipeComponent(){let r=recipes[+$('recipeSelect').value||0];let name=prompt('Component name e.g. Tape, Silicone, Screws');if(!name)return;let qty=parseFloat(prompt('Quantity per recipe unit','1')||'0');let cost=parseFloat(prompt('Unit cost','0')||'0');r.components.push({name,basis:'each',qty,cost,unit:'each'});renderRecipe()}
-function renderBOQ(){let map={};jobs.forEach(j=>j.lines.forEach(l=>{if(l.recipe){let r=recipes.find(x=>x.name===l.recipe);if(r)r.components.forEach(c=>{let key=c.name+'|'+c.unit;if(!map[key])map[key]={name:c.name,unit:c.unit,qty:0,jobs:[]};map[key].qty+=c.qty*l.recipeQty;if(!map[key].jobs.includes(j.no))map[key].jobs.push(j.no)})}}));let t=$('boqTable');t.innerHTML='';Object.values(map).forEach(x=>{t.innerHTML+=`<tr><td>${x.name}</td><td class="right">${x.qty.toFixed(2)}</td><td>${x.unit}</td><td>${x.jobs.join(', ')}</td></tr>`});if(!Object.keys(map).length)t.innerHTML='<tr><td colspan="4">Add one or more recipes to jobs to generate the BOQ.</td></tr>'}
+function renderBOQ(){
+  let map={};
+  jobs.forEach(j=>{
+    j.lines.forEach(l=>{
+      let key=(l.desc||'').trim().toLowerCase()+'|'+(l.uom||'each');
+      if(!map[key])map[key]={name:l.desc,unit:l.uom||'each',qty:0,jobs:[],locations:[]};
+      map[key].qty += (+l.qty||0);
+      if(!map[key].jobs.includes(j.no))map[key].jobs.push(j.no);
+      if(j.location && !map[key].locations.includes(j.location))map[key].locations.push(j.location);
+    });
+  });
+  let t=$('boqTable');t.innerHTML='';
+  Object.values(map).sort((a,b)=>a.name.localeCompare(b.name)).forEach(x=>{
+    let q=Number.isInteger(x.qty)?x.qty:x.qty.toFixed(2);
+    t.innerHTML+=`<tr><td>${x.name}</td><td class="right">${q}</td><td>${x.unit}</td><td>${x.jobs.join(', ')}</td><td>${x.locations.join(', ')}</td></tr>`;
+  });
+  if(!Object.keys(map).length)t.innerHTML='<tr><td colspan="5">Add costing items to the project jobs to generate the Picking List.</td></tr>';
+}
 function previewQuote(){
   let t=$('quoteJobs');t.innerHTML='';let sub=0;
   let groups={};
