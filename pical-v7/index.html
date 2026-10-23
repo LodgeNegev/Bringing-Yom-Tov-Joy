@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pical Quote Studio V7</title>
+<style>
+:root{--g:#236b38;--g2:#e9f4ec;--ink:#1f2933;--muted:#68727d;--line:#d8dee4;--bg:#f5f7f5;--warn:#fff7db}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#111;color:#fff;padding:14px 22px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:30px;font-weight:800}.brand small{display:block;font-size:11px;font-weight:400}
+header .demo{font-size:12px;background:#2d7d46;padding:6px 10px;border-radius:14px}
+nav{background:#fff;border-bottom:1px solid var(--line);padding:10px 14px;display:flex;gap:6px;flex-wrap:wrap}
+button{border:0;border-radius:6px;padding:9px 13px;cursor:pointer;font-weight:600}
+nav button,.secondary{background:var(--g2);color:var(--g)}.primary{background:var(--g);color:#fff}.danger{background:#ffe9e9;color:#9c2424}
+.screen{display:none;padding:20px;max-width:1300px;margin:auto}.screen.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:15px;box-shadow:0 1px 3px #00000008}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:#3a444c}input,select,textarea{width:100%;padding:9px;border:1px solid #bcc6ce;border-radius:6px;background:#fff}
+h2,h3{margin-top:0}.muted{color:var(--muted);font-size:13px}.notice{background:var(--g2);border-left:4px solid var(--g);padding:10px 12px;margin-bottom:14px}.warning{background:var(--warn);border-left:4px solid #d59b00;padding:10px 12px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px}.kpi b{display:block;font-size:23px;color:var(--g)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #e5e9ed;padding:8px;text-align:left}th{background:#f6f8f7}.right{text-align:right}
+.badge{display:inline-block;padding:4px 8px;border-radius:12px;background:var(--g2);color:var(--g);font-size:11px;font-weight:700}
+.jobbar{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.jobbar .grow{flex:1;min-width:320px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.quotePaper{background:#fff;max-width:900px;margin:auto;padding:30px;border:1px solid var(--line)}.quoteHead{display:flex;justify-content:space-between;border-bottom:3px solid var(--g);padding-bottom:14px;margin-bottom:20px}.quoteHead .pical{font-size:38px;font-weight:800}.quoteHead .tag{font-size:12px}
+@media(max-width:800px){.grid2,.grid3,.grid4,.kpis{grid-template-columns:1fr}.screen{padding:10px}.jobbar .grow{min-width:100%}}
+@media print{header,nav,.noPrint{display:none!important}.screen{display:none!important}.screen#printable{display:block!important;padding:0}.quotePaper{border:0}}
+</style>
+</head>
+<body>
+<header><div class="brand">pical<small>the branding company</small></div><div class="demo">V7 JOB-BASED QUOTING DEMO</div></header>
+<nav>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="newProject()">New Project</button>
+<button onclick="show('jobs')">Jobs</button>
+
+<button onclick="show('boq')">BOQ</button>
+<button onclick="previewQuote()">Customer Quote</button>
+</nav>
+
+<section id="dashboard" class="screen active">
+<h2>Dashboard</h2>
+<div class="kpis">
+<div class="kpi"><span class="muted">Current Project</span><b id="kProject">Shopping Centre Signage</b></div>
+<div class="kpi"><span class="muted">Jobs</span><b id="kJobs">3</b></div>
+<div class="kpi"><span class="muted">Project Cost</span><b id="kCost">R 0.00</b></div>
+<div class="kpi"><span class="muted">Project Sell incl. Allowances</span><b id="kSell">R 0.00</b></div>
+</div>
+<div class="card" style="margin-top:15px">
+<h3>V7 Structure</h3>
+<p><b>Project → Jobs → Costing Lines → Project Total</b></p><p><b>Customer quote:</b> individual jobs shown and grouped by type.</p>
+<p class="muted">Each project may contain dozens of jobs. Each job has its own costing and total, while the overall quotation rolls them all together.</p>
+<div class="actions"><button class="primary" onclick="show('jobs')">Open Jobs</button></div>
+</div>
+</section>
+
+<section id="project" class="screen">
+<h2>Project Details</h2>
+<div class="card">
+<div class="grid3">
+<div><label>Client</label><input id="pClient" value="Sandton Shopping Centre"></div>
+<div><label>Project Name</label><input id="pName" value="Shopping Centre Signage"></div>
+<div><label>Site</label><input id="pSite" value="Sandton"></div>
+<div><label>Estimator</label><input id="pEstimator" value="Robert"></div>
+<div><label>Quote No.</label><input id="pQuote" value="Q-2026-0201"></div>
+<div><label>Status</label><select id="pStatus"><option>Draft</option><option>Sent</option><option>Accepted</option></select></div>
+<div><label>Fixings % <span class="badge">Locked</span></label><input id="pctFixings" type="number" value="2.5" readonly></div>
+<div><label>Waste % <span class="badge">Locked</span></label><input id="pctWaste" type="number" value="2.5" readonly></div>
+<div><label>Contingency % <span class="badge">Locked</span></label><input id="pctCont" type="number" value="2.5" readonly></div>
+</div>
+<div class="notice"><b>Estimator rule:</b> Fixings, Waste and Contingency are currently fixed at 2.5% and cannot be changed by the estimator. Manager/Admin override rules to be confirmed with Rob.</div>
+<div class="actions"><button class="primary" onclick="show('jobs')">Continue to Jobs</button></div>
+</div>
+</section>
+
+<section id="jobs" class="screen">
+<h2>Project Jobs</h2>
+<div class="notice">Use the selector rather than dozens of tabs. Add or duplicate jobs as needed.</div>
+<div class="card">
+<div class="jobbar">
+<div class="grow"><label>Select Job</label><select id="jobSelect" onchange="selectJob()"></select></div>
+<div><button class="primary" onclick="addJob()">+ Add Job</button></div>
+<div><button class="secondary" onclick="duplicateJob()">Duplicate Job</button></div>
+<div><button class="secondary" onclick="show('alljobs')">All Jobs Summary</button></div>
+</div>
+</div>
+
+<div class="card">
+<h3>Job Details</h3>
+<div class="grid4">
+<div><label>Job No.</label><input id="jNo" readonly></div>
+<div><label>Job Name</label><input id="jName" oninput="saveCurrentJob()"></div>
+<div><label>Location</label><input id="jLocation" oninput="saveCurrentJob()"></div>
+<div><label>Type / Group</label><select id="jDivision" onchange="saveCurrentJob()"><option>Main Signage</option><option>Directional Signage</option><option>Information Signage</option><option>Toilet Signage</option><option>Fabrication</option><option>Installation</option><option>Other</option></select></div>
+<div><label>Status</label><select id="jStatus" onchange="saveCurrentJob()"><option>Draft</option><option>Costed</option><option>Approved</option><option>In Production</option><option>Complete</option></select></div>
+</div>
+</div>
+
+<div class="card">
+<h3>Costing Lines for this Job</h3>
+<div class="grid4">
+<div><label>Description</label><input id="lineDesc" value="ACM panel"></div>
+<div><label>Qty</label><input id="lineQty" type="number" value="1" step=".01"></div>
+<div><label>Unit Cost</label><input id="lineUnitCost" type="number" value="500" step=".01"></div>
+<div><label>Markup %</label><input id="lineMarkup" type="number" value="133"></div>
+</div>
+<div class="actions"><button class="primary" onclick="addLine()">Add Costing Line</button></div>
+<table><thead><tr><th>Description</th><th class="right">Qty</th><th class="right">Unit Cost</th><th class="right">Cost</th><th class="right">Sell</th><th></th></tr></thead><tbody id="lineTable"></tbody></table>
+<div class="grid3" style="margin-top:14px">
+<div><label>Job Cost</label><input id="jobCost" readonly></div>
+<div><label>Job Selling Price</label><input id="jobSell" readonly></div>
+<div><label>Gross Margin</label><input id="jobMargin" readonly></div>
+</div>
+</div>
+</section>
+
+<section id="alljobs" class="screen">
+<h2>All Jobs Summary</h2>
+<div class="card"><table><thead><tr><th>Job</th><th>Description</th><th>Location</th><th>Type</th><th>Status</th><th class="right">Cost</th><th class="right">Selling</th><th></th></tr></thead><tbody id="jobsTable"></tbody><tfoot><tr><td colspan="5"><b>PROJECT TOTAL</b></td><td class="right" id="projCost"></td><td class="right" id="projSell"></td><td></td></tr></tfoot></table></div>
+<div class="actions"><button class="primary" onclick="show('jobs')">Back to Current Job</button></div>
+</section>
+
+<section id="recipes" class="screen">
+<h2>Recipe Master — Parked</h2>
+<div class="warning"><b>Recipes are parked for now.</b> This screen remains only as a placeholder until Rob decides how he wants recipes handled.</div>
+<div class="card">
+<div class="grid3">
+<div><label>Recipe</label><select id="recipeSelect" onchange="renderRecipe()"></select></div>
+<div><label>Required Quantity / Area</label><input id="recipeQty" type="number" value="1" step=".01"></div>
+<div><label>Basis</label><input id="recipeBasis" readonly></div>
+</div>
+<div class="actions"><button class="primary" onclick="applyRecipe()">Add Recipe to Current Job</button><button class="secondary" onclick="addRecipeComponent()">Add Component</button></div>
+<table><thead><tr><th>Component</th><th>Basis</th><th class="right">Qty per Unit</th><th class="right">Unit Cost</th><th class="right">Extended / Unit</th></tr></thead><tbody id="recipeTable"></tbody></table>
+</div>
+</section>
+
+<section id="boq" class="screen">
+<h2>Bill of Quantities / Stores Picking List</h2><div class="warning"><b>Confirmed requirement:</b> this output is wanted. Detailed stock/recipe logic will be refined later.</div>
+<div class="notice">This consolidates materials across all jobs. No selling prices are shown.</div>
+<div class="card"><table><thead><tr><th>Item / Material</th><th class="right">Total Quantity</th><th>Unit</th><th>Jobs</th></tr></thead><tbody id="boqTable"></tbody></table></div>
+</section>
+
+<section id="printable" class="screen">
+<div class="quotePaper">
+<div class="quoteHead"><div><div class="pical">pical</div><div class="tag">the branding company</div></div><div><b>QUOTATION</b><br><span id="qNo"></span></div></div>
+<p><b>Client:</b> <span id="qClient"></span><br><b>Project:</b> <span id="qProject"></span></p>
+<table><thead><tr><th>Job</th><th>Description</th><th>Type</th><th class="right">Amount</th></tr></thead><tbody id="quoteJobs"></tbody></table>
+<div style="max-width:420px;margin-left:auto;margin-top:18px"><table>
+<tr><td>Subtotal of Jobs</td><td class="right" id="qSub"></td></tr>
+<tr><td>Fixings <span id="qFixPct"></span></td><td class="right" id="qFix"></td></tr>
+<tr><td>Waste <span id="qWastePct"></span></td><td class="right" id="qWaste"></td></tr>
+<tr><td>Contingency <span id="qContPct"></span></td><td class="right" id="qCont"></td></tr>
+<tr><td><b>Subtotal incl. Allowances</b></td><td class="right"><b id="qAdjSub"></b></td></tr>
+<tr><td>VAT 15%</td><td class="right" id="qVat"></td></tr>
+<tr><td><b>Total</b></td><td class="right"><b id="qTotal"></b></td></tr>
+</table></div>
+</div>
+<div class="actions noPrint" style="max-width:900px;margin:12px auto"><button class="primary" onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="show('jobs')">Back to Jobs</button></div>
+</section>
+
+<script>
+var jobs=[
+{no:'J001',name:'Main Entrance Pylon',location:'Entrance A',division:'Main Signage',status:'Costed',lines:[{desc:'ACM panel',qty:4,unit:500,markup:133}]},
+{no:'J002',name:'Toilet Direction Sign - Level 1',location:'Level 1',division:'Toilet Signage',status:'Draft',lines:[{desc:'Directional sign assembly',qty:2,unit:350,markup:133}]},
+{no:'J003',name:'Information Sign - Food Court',location:'Food Court',division:'Information Signage',status:'Costed',lines:[{desc:'Information panel',qty:1,unit:620,markup:133}]}
+];
+var currentJob=0;
+var recipes=[
+{name:'ACM Wall Sign',basis:'per m²',components:[
+{name:'3mm ACM',basis:'m²',qty:1.05,cost:91.37,unit:'m²'},
+{name:'Printed Vinyl',basis:'m²',qty:1.10,cost:160,unit:'m²'},
+{name:'Laminate',basis:'m²',qty:1.10,cost:160,unit:'m²'},
+{name:'Screws',basis:'each',qty:6,cost:3.50,unit:'each'},
+{name:'Wall Plugs',basis:'each',qty:6,cost:2.50,unit:'each'},
+{name:'Silicone',basis:'tube fraction',qty:.15,cost:95,unit:'tube'},
+{name:'Fabrication Labour',basis:'hours',qty:.35,cost:350,unit:'hr'}
+]},
+{name:'Steel Angle Frame',basis:'per running metre',components:[
+{name:'Steel Angle 25x25x3',basis:'running m',qty:1.05,cost:63,unit:'m'},
+{name:'Cutting',basis:'cuts',qty:2,cost:18,unit:'cut'},
+{name:'Fixings',basis:'each',qty:4,cost:3.50,unit:'each'},
+{name:'Fabrication Labour',basis:'hours',qty:.25,cost:350,unit:'hr'}
+]}
+];
+
+function $(id){return document.getElementById(id)}
+function money(v){return 'R '+Number(v||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');if(id==='alljobs')renderJobsSummary();if(id==='boq')renderBOQ()}
+function newProject(){show('project')}
+function totals(job){let cost=0,sell=0;job.lines.forEach(x=>{let c=x.qty*x.unit;cost+=c;sell+=c*(1+x.markup/100)});return {cost,sell}}
+function renderJobSelect(){let s=$('jobSelect');s.innerHTML='';jobs.forEach((j,i)=>{let o=document.createElement('option');o.value=i;o.textContent=j.no+' - '+j.name;s.appendChild(o)});s.value=currentJob}
+function selectJob(){currentJob=+$('jobSelect').value||0;loadJob()}
+function loadJob(){let j=jobs[currentJob];$('jNo').value=j.no;$('jName').value=j.name;$('jLocation').value=j.location;$('jDivision').value=j.division;$('jStatus').value=j.status||'Draft';renderLines();renderJobSelect();updateDashboard()}
+function saveCurrentJob(){let j=jobs[currentJob];j.name=$('jName').value;j.location=$('jLocation').value;j.division=$('jDivision').value;j.status=$('jStatus').value;renderJobSelect();updateDashboard()}
+function addJob(){let n=jobs.length+1;jobs.push({no:'J'+String(n).padStart(3,'0'),name:'New Job '+n,location:'',division:'Main Signage',status:'Draft',lines:[]});currentJob=jobs.length-1;loadJob();show('jobs')}
+function duplicateJob(){let src=jobs[currentJob],n=jobs.length+1;jobs.push({no:'J'+String(n).padStart(3,'0'),name:src.name+' - Copy',location:src.location,division:src.division,status:'Draft',lines:src.lines.map(x=>({...x}))});currentJob=jobs.length-1;loadJob()}
+function addLine(){let j=jobs[currentJob];j.lines.push({desc:$('lineDesc').value,qty:+$('lineQty').value||0,unit:+$('lineUnitCost').value||0,markup:+$('lineMarkup').value||0});renderLines();updateDashboard()}
+function removeLine(i){jobs[currentJob].lines.splice(i,1);renderLines();updateDashboard()}
+function renderLines(){let j=jobs[currentJob],t=$('lineTable');t.innerHTML='';j.lines.forEach((x,i)=>{let c=x.qty*x.unit,s=c*(1+x.markup/100);t.innerHTML+=`<tr><td>${x.desc}</td><td class="right">${x.qty}</td><td class="right">${money(x.unit)}</td><td class="right">${money(c)}</td><td class="right">${money(s)}</td><td><button class="danger" onclick="removeLine(${i})">X</button></td></tr>`});let z=totals(j);$('jobCost').value=money(z.cost);$('jobSell').value=money(z.sell);$('jobMargin').value=(z.sell?((z.sell-z.cost)/z.sell*100):0).toFixed(1)+'%'}
+function renderJobsSummary(){let t=$('jobsTable');t.innerHTML='';let pc=0,ps=0;jobs.forEach((j,i)=>{let z=totals(j);pc+=z.cost;ps+=z.sell;t.innerHTML+=`<tr><td>${j.no}</td><td>${j.name}</td><td>${j.location}</td><td>${j.division}</td><td><span class="badge">${j.status||'Draft'}</span></td><td class="right">${money(z.cost)}</td><td class="right">${money(z.sell)}</td><td><button class="secondary" onclick="openJob(${i})">Open</button></td></tr>`});$('projCost').textContent=money(pc);$('projSell').textContent=money(ps)}
+function openJob(i){currentJob=i;loadJob();show('jobs')}
+function allowanceRates(){
+  return {
+    fix:(+$('pctFixings').value||0)/100,
+    waste:(+$('pctWaste').value||0)/100,
+    cont:(+$('pctCont').value||0)/100
+  };
+}
+function updateDashboard(){
+  let c=0,s=0;
+  jobs.forEach(j=>{let z=totals(j);c+=z.cost;s+=z.sell});
+  let r=allowanceRates(), adjusted=s+s*r.fix+s*r.waste+s*r.cont;
+  $('kJobs').textContent=jobs.length;
+  $('kCost').textContent=money(c);
+  $('kSell').textContent=money(adjusted);
+  $('kProject').textContent=$('pName')?$('pName').value:'Shopping Centre Signage'
+}
+function renderRecipeSelect(){let s=$('recipeSelect');s.innerHTML='';recipes.forEach((r,i)=>{let o=document.createElement('option');o.value=i;o.textContent=r.name;s.appendChild(o)});renderRecipe()}
+function renderRecipe(){let r=recipes[+$('recipeSelect').value||0];$('recipeBasis').value=r.basis;let t=$('recipeTable');t.innerHTML='';r.components.forEach(c=>{t.innerHTML+=`<tr><td>${c.name}</td><td>${c.basis}</td><td class="right">${c.qty}</td><td class="right">${money(c.cost)}</td><td class="right">${money(c.qty*c.cost)}</td></tr>`})}
+function applyRecipe(){let r=recipes[+$('recipeSelect').value||0],q=+$('recipeQty').value||0;let cost=0;r.components.forEach(c=>cost+=c.qty*c.cost*q);jobs[currentJob].lines.push({desc:r.name+' recipe ('+q+' '+r.basis+')',qty:1,unit:cost,markup:133,recipe:r.name,recipeQty:q});renderLines();updateDashboard();show('jobs')}
+function addRecipeComponent(){let r=recipes[+$('recipeSelect').value||0];let name=prompt('Component name e.g. Tape, Silicone, Screws');if(!name)return;let qty=parseFloat(prompt('Quantity per recipe unit','1')||'0');let cost=parseFloat(prompt('Unit cost','0')||'0');r.components.push({name,basis:'each',qty,cost,unit:'each'});renderRecipe()}
+function renderBOQ(){let map={};jobs.forEach(j=>j.lines.forEach(l=>{if(l.recipe){let r=recipes.find(x=>x.name===l.recipe);if(r)r.components.forEach(c=>{let key=c.name+'|'+c.unit;if(!map[key])map[key]={name:c.name,unit:c.unit,qty:0,jobs:[]};map[key].qty+=c.qty*l.recipeQty;if(!map[key].jobs.includes(j.no))map[key].jobs.push(j.no)})}}));let t=$('boqTable');t.innerHTML='';Object.values(map).forEach(x=>{t.innerHTML+=`<tr><td>${x.name}</td><td class="right">${x.qty.toFixed(2)}</td><td>${x.unit}</td><td>${x.jobs.join(', ')}</td></tr>`});if(!Object.keys(map).length)t.innerHTML='<tr><td colspan="4">Add one or more recipes to jobs to generate the BOQ.</td></tr>'}
+function previewQuote(){
+  let t=$('quoteJobs');t.innerHTML='';let sub=0;
+  let groups={};
+  jobs.forEach(j=>{if(!groups[j.division])groups[j.division]=[];groups[j.division].push(j)});
+  Object.keys(groups).forEach(group=>{
+    let groupTotal=0;
+    t.innerHTML+=`<tr><td colspan="4" style="background:#e9f4ec;font-weight:700;color:#236b38">${group}</td></tr>`;
+    groups[group].forEach(j=>{
+      let z=totals(j);sub+=z.sell;groupTotal+=z.sell;
+      t.innerHTML+=`<tr><td>${j.no}</td><td>${j.name}</td><td>${j.division}</td><td class="right">${money(z.sell)}</td></tr>`;
+    });
+    t.innerHTML+=`<tr><td colspan="3" class="right"><b>${group} Subtotal</b></td><td class="right"><b>${money(groupTotal)}</b></td></tr>`;
+  });
+  let r=allowanceRates(), fix=sub*r.fix, waste=sub*r.waste, cont=sub*r.cont;
+  let adjusted=sub+fix+waste+cont, vat=adjusted*.15;
+  $('qNo').textContent=$('pQuote').value;
+  $('qClient').textContent=$('pClient').value;
+  $('qProject').textContent=$('pName').value;
+  $('qSub').textContent=money(sub);
+  $('qFixPct').textContent='('+($('pctFixings').value||0)+'%)';
+  $('qWastePct').textContent='('+($('pctWaste').value||0)+'%)';
+  $('qContPct').textContent='('+($('pctCont').value||0)+'%)';
+  $('qFix').textContent=money(fix);
+  $('qWaste').textContent=money(waste);
+  $('qCont').textContent=money(cont);
+  $('qAdjSub').textContent=money(adjusted);
+  $('qVat').textContent=money(vat);
+  $('qTotal').textContent=money(adjusted+vat);
+  show('printable')
+}
+renderJobSelect();loadJob();renderRecipeSelect();updateDashboard();
+</script>
+</body>
+</html>
