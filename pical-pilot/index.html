@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pical Working Pilot</title>
+<style>
+:root{--g:#236b38;--g2:#eaf4ed;--bg:#f5f7f5;--line:#d7ded9;--ink:#20262b;--muted:#667085}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#111;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:30px;font-weight:800}.logo small{display:block;font-size:11px;font-weight:400}
+nav{background:#fff;border-bottom:1px solid var(--line);padding:10px;display:flex;gap:6px;flex-wrap:wrap}
+button{border:0;border-radius:6px;padding:10px 13px;cursor:pointer;font-weight:700}
+nav button,.secondary{background:var(--g2);color:var(--g)}.primary{background:var(--g);color:#fff}.danger{background:#fde8e8;color:#991b1b}
+main{max-width:1280px;margin:auto;padding:18px}.view{display:none}.view.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:#fff;border:1px solid var(--line);padding:14px;border-radius:10px}.kpi b{display:block;font-size:21px;color:var(--g)}
+label{font-size:12px;font-weight:700;display:block;margin-bottom:4px}input,select{width:100%;padding:9px;border:1px solid #bfc8c1;border-radius:6px;background:#fff}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.muted{color:var(--muted);font-size:13px}.notice{background:var(--g2);border-left:4px solid var(--g);padding:10px 12px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px;border-bottom:1px solid #e7ebe8;text-align:left}th{background:#f7f8f7}.right{text-align:right}.link{color:var(--g);text-decoration:underline;cursor:pointer;font-weight:700}
+#status{display:none;background:#fff7d6;border-bottom:1px solid #ead99a;padding:7px 12px;font-size:12px}
+@media(max-width:850px){.grid2,.grid3,.grid4,.kpis{grid-template-columns:1fr 1fr}}@media(max-width:560px){.grid2,.grid3,.grid4,.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="status"></div>
+<header><div class="logo">pical<small>the branding company</small></div><div>WORKING PILOT</div></header>
+<nav>
+<button type="button" data-view="dashboard">Dashboard</button>
+<button type="button" id="navQuote">Quote</button>
+<button type="button" data-view="recipes">Recipes</button>
+<button type="button" data-view="clients">Clients</button>
+<button type="button" data-view="materials">Materials</button>
+<button type="button" data-view="projects">Projects</button>
+</nav>
+<main>
+
+<section id="dashboard" class="view active">
+<h2>Dashboard</h2>
+<div class="kpis">
+<div class="kpi"><span class="muted">Projects</span><b id="dashProjects">0</b></div>
+<div class="kpi"><span class="muted">Draft</span><b id="dashDraft">0</b></div>
+<div class="kpi"><span class="muted">Accepted</span><b id="dashAccepted">0</b></div>
+<div class="kpi"><span class="muted">Quoted Value</span><b id="dashValue">R 0.00</b></div>
+</div>
+<div class="card" style="margin-top:14px"><button type="button" class="primary" id="newProject">+ New Quote / Project</button></div>
+<div class="card"><h3>Recent Projects</h3><table><thead><tr><th>Quote</th><th>Client</th><th>Project</th><th>Status</th><th class="right">Sell</th><th></th></tr></thead><tbody id="dashRows"></tbody></table></div>
+</section>
+
+<section id="quote" class="view">
+<h2>Quote</h2>
+<div class="card">
+<div class="grid4">
+<div><label>Quote No.</label><input id="quoteNo"></div>
+<div><label>Client</label><select id="quoteClient"></select></div>
+<div><label>Project Name</label><input id="quoteProject"></div>
+<div><label>Status</label><select id="quoteStatus"><option>Draft</option><option>Sent</option><option>Accepted</option></select></div>
+<div><label>Site Address</label><input id="siteAddress"></div>
+<div><label>Distance one-way km</label><input id="distanceKm" type="number" min="0" step="0.1"></div>
+<div><label>Mileage rate / km</label><input id="mileageRate" type="number" min="0" step="0.01"></div>
+<div><label>Markup %</label><input id="markupPct" type="number" min="0" step="1"></div>
+</div>
+<div class="actions"><button type="button" class="primary" id="saveProject">Save Project</button><button type="button" class="secondary" id="openProjectDashboard">Project Dashboard</button><button type="button" class="secondary" id="openBOQ">BOQ / Picking List</button></div>
+</div>
+
+<div class="card">
+<h3>Jobs</h3>
+<div class="grid3">
+<div><label>Current Job</label><select id="jobSelect"></select></div>
+<div><label>Job Name</label><input id="jobName"></div>
+<div><label>Job Type</label><select id="jobType"><option>Main Signage</option><option>Directional Signage</option><option>Information Signage</option><option>Toilet Signage</option><option>Vehicle Branding</option><option>Installation</option><option>Other</option></select></div>
+</div>
+<div class="actions"><button type="button" class="primary" id="addJob">+ Add Job</button><button type="button" class="secondary" id="duplicateJob">Duplicate Job</button></div>
+</div>
+
+<div class="card">
+<h3>Build Job Costing</h3>
+<div class="notice"><b>Option 1:</b> add a single costing line. <b>Option 2:</b> choose a saved recipe.</div>
+<div class="grid4">
+<div><label>Line Type</label><select id="lineType"><option>Material</option><option>Labour</option><option>Fixings</option><option>Waste</option><option>Installation</option><option>Other</option></select></div>
+<div><label>Material Lookup</label><select id="materialLookup"></select></div>
+<div><label>Description</label><input id="lineDescription"></div>
+<div><label>Quantity</label><input id="lineQty" type="number" min="0" step="0.01" value="1"></div>
+<div><label>Unit</label><select id="lineUnit"><option>each</option><option>m²</option><option>m</option><option>sheet</option><option>roll</option><option>hour</option><option>fixed</option></select></div>
+<div><label>Unit Cost</label><input id="lineCost" type="number" min="0" step="0.01" value="0"></div>
+<div><label>Recipe</label><select id="recipeLookup"></select></div>
+<div><label>Recipe Qty</label><input id="recipeQty" type="number" min="0" step="0.01" value="1"></div>
+</div>
+<div class="actions"><button type="button" class="primary" id="addLine">Add Single Line</button><button type="button" class="secondary" id="addRecipe">Add Recipe</button></div>
+<table><thead><tr><th>Type</th><th>Description</th><th class="right">Qty</th><th>Unit</th><th class="right">Cost</th><th class="right">Sell</th><th></th></tr></thead><tbody id="jobLines"></tbody></table>
+</div>
+</section>
+
+<section id="recipes" class="view">
+<h2>Recipes</h2>
+<div class="card">
+<div class="grid4">
+<div><label>Recipe No.</label><input id="recipeNo" placeholder="R001"></div>
+<div><label>Name</label><input id="recipeName"></div>
+<div><label>Labour Hours</label><input id="recipeLabourHours" type="number" min="0" step="0.25" value="0"></div>
+<div><label>Labour Rate</label><input id="recipeLabourRate" type="number" min="0" step="0.01" value="350"></div>
+<div><label>Fixings Cost</label><input id="recipeFixings" type="number" min="0" step="0.01" value="0"></div>
+<div><label>Waste %</label><input id="recipeWaste" type="number" min="0" step="0.1" value="0"></div>
+<div><label>Installation Hours</label><input id="recipeInstallHours" type="number" min="0" step="0.25" value="0"></div>
+<div><label>Installation Rate</label><input id="recipeInstallRate" type="number" min="0" step="0.01" value="350"></div>
+</div>
+<div class="actions"><button type="button" class="primary" id="createRecipe">Create Recipe</button></div>
+</div>
+<div class="card"><table><thead><tr><th>No.</th><th>Name</th><th>Labour</th><th>Fixings</th><th>Waste</th><th>Installation</th><th></th></tr></thead><tbody id="recipeRows"></tbody></table></div>
+<div class="card" id="recipeMaterialsCard" style="display:none">
+<h3 id="recipeMaterialsTitle">Recipe Materials</h3>
+<div class="grid3"><div><label>Material</label><select id="recipeMaterial"></select></div><div><label>Qty</label><input id="recipeMaterialQty" type="number" min="0" step="0.01" value="1"></div><div><label>Unit</label><select id="recipeMaterialUnit"><option>each</option><option>m²</option><option>m</option><option>sheet</option><option>roll</option></select></div></div>
+<div class="actions"><button type="button" class="primary" id="addRecipeMaterial">Add Material</button></div>
+<table><thead><tr><th>Material</th><th>Qty</th><th>Unit</th><th class="right">Cost</th><th></th></tr></thead><tbody id="recipeMaterialRows"></tbody></table>
+</div>
+</section>
+
+<section id="clients" class="view">
+<h2>Clients</h2>
+<div class="card"><div class="grid4"><div><label>Company</label><input id="clientCompany"></div><div><label>Contact</label><input id="clientContact"></div><div><label>Email</label><input id="clientEmail"></div><div><label>Phone</label><input id="clientPhone"></div></div><div class="actions"><button type="button" class="primary" id="addClient">Add Client</button></div></div>
+<div class="card"><table><thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th></tr></thead><tbody id="clientRows"></tbody></table></div>
+</section>
+
+<section id="materials" class="view">
+<h2>Materials</h2>
+<div class="card"><div class="grid4"><div><label>Code</label><input id="materialCode"></div><div><label>Description</label><input id="materialDescription"></div><div><label>Unit</label><select id="materialUnit"><option>each</option><option>m²</option><option>m</option><option>sheet</option><option>roll</option><option>hour</option></select></div><div><label>Cost</label><input id="materialCost" type="number" min="0" step="0.01" value="0"></div></div><div class="actions"><button type="button" class="primary" id="addMaterial">Add Material</button></div></div>
+<div class="card"><table><thead><tr><th>Code</th><th>Description</th><th>Unit</th><th class="right">Cost</th></tr></thead><tbody id="materialRows"></tbody></table></div>
+</section>
+
+<section id="projects" class="view"><h2>Projects</h2><div class="card"><table><thead><tr><th>Quote</th><th>Client</th><th>Project</th><th>Address</th><th>Status</th><th class="right">Sell</th><th></th></tr></thead><tbody id="projectRows"></tbody></table></div></section>
+
+<section id="projectDashboard" class="view">
+<h2>Project Dashboard</h2>
+<div class="kpis">
+<div class="kpi"><span class="muted">Materials</span><b id="pdMaterials">R 0.00</b></div>
+<div class="kpi"><span class="muted">Labour</span><b id="pdLabour">R 0.00</b></div>
+<div class="kpi"><span class="muted">Installation</span><b id="pdInstallation">R 0.00</b></div>
+<div class="kpi"><span class="muted">Travel</span><b id="pdTravel">R 0.00</b></div>
+</div>
+<div class="card" style="margin-top:14px"><div class="grid3"><div><label>Project</label><input id="pdProject" readonly></div><div><label>Address</label><input id="pdAddress" readonly></div><div><label>Distance</label><input id="pdDistance" readonly></div><div><label>Total Cost</label><input id="pdCost" readonly></div><div><label>Selling Price</label><input id="pdSell" readonly></div><div><label>Gross Margin</label><input id="pdMargin" readonly></div></div><div class="actions"><button type="button" class="primary" id="editProject">Edit Project</button></div></div>
+</section>
+
+<section id="boq" class="view"><h2>BOQ / Picking List</h2><div class="card"><table><thead><tr><th>Material</th><th class="right">Qty</th><th>Unit</th><th>Jobs</th></tr></thead><tbody id="boqRows"></tbody></table></div></section>
+
+</main>
+<script>
+(function(){
+  'use strict';
+  var STORAGE_KEY='pical_clean_pilot_v1';
+  var db={clients:[{name:'Demo Client',contact:'',email:'',phone:''}],materials:[{code:'S0006',desc:'3MM C BOND ACM WHITE MATT/MATT',uom:'sheet',cost:418.03},{code:'S0058',desc:'AVERY MPI1105 WHITE',uom:'m',cost:160}],recipes:[],projects:[]};
+  var currentProjectId=null;
+  var currentJobIndex=0;
+  var currentRecipeIndex=null;
+
+  function E(id){return document.getElementById(id);}
+  function showStatus(msg){var s=E('status');s.textContent=msg;s.style.display='block';window.setTimeout(function(){s.style.display='none';},2200);}
+  function showView(id){var all=document.querySelectorAll('.view');for(var i=0;i<all.length;i++){all[i].classList.remove('active');}var v=E(id);if(v){v.classList.add('active');}}
+  function money(v){var n=Number(v||0);return 'R '+n.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function load(){try{var raw=window.localStorage.getItem(STORAGE_KEY);if(raw){var parsed=JSON.parse(raw);if(parsed&&parsed.clients&&parsed.materials&&parsed.projects&&parsed.recipes){db=parsed;}}}catch(err){showStatus('Browser storage is unavailable; changes will last only for this session.');}}
+  function save(){try{window.localStorage.setItem(STORAGE_KEY,JSON.stringify(db));return true;}catch(err){showStatus('Could not save to browser storage.');return false;}}
+  function clientName(i){return db.clients[i]?db.clients[i].name:'';}
+  function currentProject(){for(var i=0;i<db.projects.length;i++){if(db.projects[i].id===currentProjectId){return db.projects[i];}}return null;}
+  function totals(p){
+    var cost=0,sell=0,cats={Material:0,Labour:0,Installation:0,Fixings:0,Waste:0,Other:0,Travel:0};
+    for(var i=0;i<(p.jobs||[]).length;i++){
+      var lines=p.jobs[i].lines||[];
+      for(var j=0;j<lines.length;j++){
+        var c=(Number(lines[j].qty)||0)*(Number(lines[j].cost)||0);
+        cost+=c;sell+=c*(1+(Number(p.markup)||0)/100);
+        cats[lines[j].type]=(cats[lines[j].type]||0)+c;
+      }
+    }
+    var travel=(Number(p.distance)||0)*2*(Number(p.mileage)||0);
+    cost+=travel;sell+=travel*(1+(Number(p.markup)||0)/100);cats.Travel=travel;
+    return {cost:cost,sell:sell,cats:cats};
+  }
+
+  function refreshLookups(){
+    E('quoteClient').innerHTML='';
+    for(var i=0;i<db.clients.length;i++){var o=document.createElement('option');o.value=String(i);o.textContent=db.clients[i].name;E('quoteClient').appendChild(o);}
+    var materialIds=['materialLookup','recipeMaterial'];
+    for(var k=0;k<materialIds.length;k++){var s=E(materialIds[k]);s.innerHTML='<option value="">-- choose material --</option>';for(var m=0;m<db.materials.length;m++){var om=document.createElement('option');om.value=String(m);om.textContent=db.materials[m].code+' - '+db.materials[m].desc;s.appendChild(om);}}
+    E('recipeLookup').innerHTML='<option value="">-- choose recipe --</option>';
+    for(var r=0;r<db.recipes.length;r++){var or=document.createElement('option');or.value=String(r);or.textContent=db.recipes[r].no+' - '+db.recipes[r].name;E('recipeLookup').appendChild(or);}
+  }
+
+  function renderDashboard(){
+    var draft=0,accepted=0,value=0;
+    for(var i=0;i<db.projects.length;i++){if(db.projects[i].status==='Draft')draft++;if(db.projects[i].status==='Accepted')accepted++;value+=totals(db.projects[i]).sell;}
+    E('dashProjects').textContent=String(db.projects.length);E('dashDraft').textContent=String(draft);E('dashAccepted').textContent=String(accepted);E('dashValue').textContent=money(value);
+    var html='';
+    for(var p=db.projects.length-1;p>=0;p--){var pr=db.projects[p],t=totals(pr);html+='<tr><td><span class="link" data-projectdash="'+pr.id+'">'+pr.quote+'</span></td><td>'+clientName(pr.client)+'</td><td>'+pr.project+'</td><td>'+pr.status+'</td><td class="right">'+money(t.sell)+'</td><td><button type="button" class="secondary" data-projectedit="'+pr.id+'">Edit</button></td></tr>';}
+    E('dashRows').innerHTML=html;
+  }
+
+  function newProject(){
+    var id='P'+Date.now();
+    db.projects.push({id:id,quote:'Q-'+new Date().getFullYear()+'-'+String(db.projects.length+1).padStart(4,'0'),client:0,project:'New Project',status:'Draft',address:'',distance:0,mileage:0,markup:133,jobs:[{no:'J001',name:'Job 1',type:'Main Signage',lines:[]}]});
+    currentProjectId=id;currentJobIndex=0;save();openQuote(id);
+  }
+
+  function openQuote(id){
+    if(id){currentProjectId=id;}
+    if(!currentProjectId){if(db.projects.length){currentProjectId=db.projects[0].id;}else{newProject();return;}}
+    var p=currentProject();if(!p){newProject();return;}
+    refreshLookups();
+    E('quoteNo').value=p.quote;E('quoteClient').value=String(p.client);E('quoteProject').value=p.project;E('quoteStatus').value=p.status;E('siteAddress').value=p.address;E('distanceKm').value=String(p.distance);E('mileageRate').value=String(p.mileage);E('markupPct').value=String(p.markup);
+    if(currentJobIndex>=p.jobs.length){currentJobIndex=0;}
+    renderJob();showView('quote');
+  }
+
+  function saveProject(){
+    var p=currentProject();if(!p){return;}
+    p.quote=E('quoteNo').value.trim()||p.quote;p.client=Number(E('quoteClient').value)||0;p.project=E('quoteProject').value.trim()||'Untitled Project';p.status=E('quoteStatus').value;p.address=E('siteAddress').value.trim();p.distance=Math.max(0,Number(E('distanceKm').value)||0);p.mileage=Math.max(0,Number(E('mileageRate').value)||0);p.markup=Math.max(0,Number(E('markupPct').value)||0);
+    save();showStatus('Project saved.');
+  }
+
+  function renderJob(){
+    var p=currentProject();if(!p){return;}
+    E('jobSelect').innerHTML='';
+    for(var i=0;i<p.jobs.length;i++){var o=document.createElement('option');o.value=String(i);o.textContent=p.jobs[i].no+' - '+p.jobs[i].name;E('jobSelect').appendChild(o);}
+    E('jobSelect').value=String(currentJobIndex);
+    var j=p.jobs[currentJobIndex];E('jobName').value=j.name;E('jobType').value=j.type;
+    var html='';
+    for(var x=0;x<j.lines.length;x++){var l=j.lines[x],c=l.qty*l.cost,s=c*(1+p.markup/100);html+='<tr><td>'+l.type+'</td><td>'+l.desc+'</td><td class="right">'+l.qty+'</td><td>'+l.uom+'</td><td class="right">'+money(c)+'</td><td class="right">'+money(s)+'</td><td><button type="button" class="danger" data-remove-line="'+x+'">X</button></td></tr>';}
+    E('jobLines').innerHTML=html;
+  }
+
+  function saveJobMeta(){
+    var p=currentProject();if(!p){return;}var j=p.jobs[currentJobIndex];j.name=E('jobName').value.trim()||j.name;j.type=E('jobType').value;save();renderJob();
+  }
+  function addJob(){var p=currentProject();if(!p){return;}var n=p.jobs.length+1;p.jobs.push({no:'J'+String(n).padStart(3,'0'),name:'Job '+n,type:'Main Signage',lines:[]});currentJobIndex=p.jobs.length-1;save();renderJob();}
+  function duplicateJob(){var p=currentProject();if(!p){return;}var src=p.jobs[currentJobIndex],n=p.jobs.length+1,copy=JSON.parse(JSON.stringify(src));copy.no='J'+String(n).padStart(3,'0');copy.name=src.name+' Copy';p.jobs.push(copy);currentJobIndex=p.jobs.length-1;save();renderJob();}
+
+  function useMaterial(){
+    var v=E('materialLookup').value;if(v===''){return;}var m=db.materials[Number(v)];E('lineType').value='Material';E('lineDescription').value=m.desc;E('lineUnit').value=m.uom;E('lineCost').value=String(m.cost);
+  }
+  function addLine(){
+    saveProject();var p=currentProject();if(!p){return;}var j=p.jobs[currentJobIndex];
+    var qty=Math.max(0,Number(E('lineQty').value)||0),cost=Math.max(0,Number(E('lineCost').value)||0);
+    j.lines.push({type:E('lineType').value,desc:E('lineDescription').value.trim()||'Line item',qty:qty,uom:E('lineUnit').value,cost:cost});save();renderJob();showStatus('Costing line added.');
+  }
+  function removeLine(i){var p=currentProject();if(!p){return;}p.jobs[currentJobIndex].lines.splice(i,1);save();renderJob();}
+
+  function addRecipeToJob(){
+    var idx=E('recipeLookup').value;if(idx===''){showStatus('Choose a recipe first.');return;}var r=db.recipes[Number(idx)],q=Math.max(0,Number(E('recipeQty').value)||0),p=currentProject();if(!p){return;}var j=p.jobs[currentJobIndex],materialTotal=0;
+    for(var i=0;i<r.materials.length;i++){var c=r.materials[i],qty=c.qty*q;j.lines.push({type:'Material',desc:c.desc,qty:qty,uom:c.uom,cost:c.cost});materialTotal+=qty*c.cost;}
+    if(r.labourHours>0){j.lines.push({type:'Labour',desc:r.name+' labour',qty:r.labourHours*q,uom:'hour',cost:r.labourRate});}
+    if(r.fixings>0){j.lines.push({type:'Fixings',desc:r.name+' fixings',qty:q,uom:'fixed',cost:r.fixings});}
+    if(r.waste>0&&materialTotal>0){j.lines.push({type:'Waste',desc:r.name+' waste '+r.waste+'%',qty:1,uom:'fixed',cost:materialTotal*r.waste/100});}
+    if(r.installHours>0){j.lines.push({type:'Installation',desc:r.name+' installation',qty:r.installHours*q,uom:'hour',cost:r.installRate});}
+    save();renderJob();showStatus('Recipe added to job.');
+  }
+
+  function renderClients(){var html='';for(var i=0;i<db.clients.length;i++){var c=db.clients[i];html+='<tr><td>'+c.name+'</td><td>'+c.contact+'</td><td>'+c.email+'</td><td>'+c.phone+'</td></tr>';}E('clientRows').innerHTML=html;}
+  function addClient(){var name=E('clientCompany').value.trim();if(!name){showStatus('Enter a company name.');return;}db.clients.push({name:name,contact:E('clientContact').value.trim(),email:E('clientEmail').value.trim(),phone:E('clientPhone').value.trim()});save();renderClients();refreshLookups();showStatus('Client added.');}
+
+  function renderMaterials(){var html='';for(var i=0;i<db.materials.length;i++){var m=db.materials[i];html+='<tr><td>'+m.code+'</td><td>'+m.desc+'</td><td>'+m.uom+'</td><td class="right">'+money(m.cost)+'</td></tr>';}E('materialRows').innerHTML=html;}
+  function addMaterial(){var desc=E('materialDescription').value.trim();if(!desc){showStatus('Enter a material description.');return;}db.materials.push({code:E('materialCode').value.trim()||('M'+String(db.materials.length+1)),desc:desc,uom:E('materialUnit').value,cost:Math.max(0,Number(E('materialCost').value)||0)});save();renderMaterials();refreshLookups();showStatus('Material added.');}
+
+  function renderRecipes(){
+    var html='';for(var i=0;i<db.recipes.length;i++){var r=db.recipes[i];html+='<tr><td>'+r.no+'</td><td>'+r.name+'</td><td>'+r.labourHours+' hrs</td><td>'+money(r.fixings)+'</td><td>'+r.waste+'%</td><td>'+r.installHours+' hrs</td><td><button type="button" class="secondary" data-recipe-edit="'+i+'">Materials</button></td></tr>';}E('recipeRows').innerHTML=html;
+  }
+  function createRecipe(){
+    var name=E('recipeName').value.trim();if(!name){showStatus('Enter a recipe name.');return;}
+    db.recipes.push({no:E('recipeNo').value.trim()||('R'+String(db.recipes.length+1).padStart(3,'0')),name:name,labourHours:Math.max(0,Number(E('recipeLabourHours').value)||0),labourRate:Math.max(0,Number(E('recipeLabourRate').value)||0),fixings:Math.max(0,Number(E('recipeFixings').value)||0),waste:Math.max(0,Number(E('recipeWaste').value)||0),installHours:Math.max(0,Number(E('recipeInstallHours').value)||0),installRate:Math.max(0,Number(E('recipeInstallRate').value)||0),materials:[]});
+    save();renderRecipes();refreshLookups();showStatus('Recipe created.');
+  }
+  function editRecipeMaterials(i){currentRecipeIndex=i;var r=db.recipes[i];E('recipeMaterialsCard').style.display='block';E('recipeMaterialsTitle').textContent=r.no+' - '+r.name+' Materials';renderRecipeMaterials();}
+  function addRecipeMaterial(){if(currentRecipeIndex===null){return;}var idx=E('recipeMaterial').value;if(idx===''){showStatus('Choose a material.');return;}var m=db.materials[Number(idx)];db.recipes[currentRecipeIndex].materials.push({desc:m.desc,qty:Math.max(0,Number(E('recipeMaterialQty').value)||0),uom:E('recipeMaterialUnit').value,cost:m.cost});save();renderRecipeMaterials();}
+  function renderRecipeMaterials(){var r=db.recipes[currentRecipeIndex],html='';for(var i=0;i<r.materials.length;i++){var m=r.materials[i];html+='<tr><td>'+m.desc+'</td><td>'+m.qty+'</td><td>'+m.uom+'</td><td class="right">'+money(m.cost)+'</td><td><button type="button" class="danger" data-recipe-material-remove="'+i+'">X</button></td></tr>';}E('recipeMaterialRows').innerHTML=html;}
+  function removeRecipeMaterial(i){db.recipes[currentRecipeIndex].materials.splice(i,1);save();renderRecipeMaterials();}
+
+  function renderProjects(){var html='';for(var i=0;i<db.projects.length;i++){var p=db.projects[i],t=totals(p);html+='<tr><td><span class="link" data-projectdash="'+p.id+'">'+p.quote+'</span></td><td>'+clientName(p.client)+'</td><td>'+p.project+'</td><td>'+p.address+'</td><td>'+p.status+'</td><td class="right">'+money(t.sell)+'</td><td><button type="button" class="secondary" data-projectedit="'+p.id+'">Edit</button></td></tr>';}E('projectRows').innerHTML=html;}
+
+  function renderProjectDashboard(){
+    var p=currentProject();if(!p){return;}var t=totals(p);E('pdMaterials').textContent=money(t.cats.Material);E('pdLabour').textContent=money(t.cats.Labour);E('pdInstallation').textContent=money(t.cats.Installation);E('pdTravel').textContent=money(t.cats.Travel);E('pdProject').value=p.project;E('pdAddress').value=p.address;E('pdDistance').value=p.distance+' km one way';E('pdCost').value=money(t.cost);E('pdSell').value=money(t.sell);E('pdMargin').value=(t.sell?((t.sell-t.cost)/t.sell*100):0).toFixed(1)+'%';showView('projectDashboard');
+  }
+
+  function renderBOQ(){
+    var p=currentProject();if(!p){return;}var map={};
+    for(var i=0;i<p.jobs.length;i++){var j=p.jobs[i];for(var x=0;x<j.lines.length;x++){var l=j.lines[x];if(l.type!=='Material'){continue;}var key=l.desc+'|'+l.uom;if(!map[key]){map[key]={desc:l.desc,uom:l.uom,qty:0,jobs:[]};}map[key].qty+=Number(l.qty)||0;if(map[key].jobs.indexOf(j.no)<0){map[key].jobs.push(j.no);}}}
+    var html='';for(var k in map){if(Object.prototype.hasOwnProperty.call(map,k)){var v=map[k];html+='<tr><td>'+v.desc+'</td><td class="right">'+v.qty.toFixed(2)+'</td><td>'+v.uom+'</td><td>'+v.jobs.join(', ')+'</td></tr>';}}
+    E('boqRows').innerHTML=html||'<tr><td colspan="4">No material lines yet.</td></tr>';showView('boq');
+  }
+
+  document.addEventListener('click',function(ev){
+    var btn=ev.target.closest('button,[data-projectedit],[data-projectdash],[data-recipe-edit],[data-remove-line],[data-recipe-material-remove]');if(!btn){return;}
+    if(btn.dataset.view){var id=btn.dataset.view;if(id==='clients')renderClients();if(id==='materials')renderMaterials();if(id==='recipes')renderRecipes();if(id==='projects')renderProjects();showView(id);return;}
+    if(btn.id==='navQuote'){openQuote();return;} if(btn.id==='newProject'){newProject();return;} if(btn.id==='saveProject'){saveProject();return;} if(btn.id==='addJob'){addJob();return;} if(btn.id==='duplicateJob'){duplicateJob();return;}
+    if(btn.id==='addLine'){addLine();return;} if(btn.id==='addRecipe'){addRecipeToJob();return;} if(btn.id==='addClient'){addClient();return;} if(btn.id==='addMaterial'){addMaterial();return;} if(btn.id==='createRecipe'){createRecipe();return;}
+    if(btn.id==='addRecipeMaterial'){addRecipeMaterial();return;} if(btn.id==='openProjectDashboard'){saveProject();renderProjectDashboard();return;} if(btn.id==='openBOQ'){saveProject();renderBOQ();return;} if(btn.id==='editProject'){openQuote(currentProjectId);return;}
+    if(btn.dataset.projectedit){openQuote(btn.dataset.projectedit);return;} if(btn.dataset.projectdash){currentProjectId=btn.dataset.projectdash;renderProjectDashboard();return;} if(btn.dataset.recipeEdit!==undefined){editRecipeMaterials(Number(btn.dataset.recipeEdit));return;}
+    if(btn.dataset.removeLine!==undefined){removeLine(Number(btn.dataset.removeLine));return;} if(btn.dataset.recipeMaterialRemove!==undefined){removeRecipeMaterial(Number(btn.dataset.recipeMaterialRemove));return;}
+  });
+  E('jobSelect').addEventListener('change',function(){currentJobIndex=Number(E('jobSelect').value)||0;renderJob();});
+  E('jobName').addEventListener('change',saveJobMeta);E('jobType').addEventListener('change',saveJobMeta);E('materialLookup').addEventListener('change',useMaterial);
+
+  load();refreshLookups();renderClients();renderMaterials();renderRecipes();renderDashboard();
+})();
+</script>
+</body>
+</html>
